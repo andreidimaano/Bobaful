@@ -1,6 +1,6 @@
-const Cat = require("./models/Cat");
+import Cat from "./models/Cat";
 
-module.exports = {
+export = {
   Query: {
     cats: () => Cat.find(),
   },

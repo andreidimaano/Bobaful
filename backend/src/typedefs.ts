@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express");
+import { gql } from "apollo-server-express";
 
 const schema = gql`
   # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
@@ -17,4 +17,4 @@ const schema = gql`
   }
 `;
 
-module.exports = schema;
+export = schema;
