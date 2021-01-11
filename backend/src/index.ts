@@ -1,15 +1,17 @@
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import mongoose from "mongoose";
-import typeDefs from "./typedefs";
-import resolvers from "./resolvers";
+import { CatResolver } from "./resolvers/CatResolver";
+import { DogResolver } from "./resolvers/DogResolver";
+import { ProductResolver } from "./resolvers/ProductResolver";
+import { schema } from "./typedefs";
 
 const startServer = async () => {
   const app = express();
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+      typeDefs: schema,
+      resolvers: [CatResolver, DogResolver, ProductResolver],
   });
 
   server.applyMiddleware({ app });
@@ -29,6 +31,7 @@ const startServer = async () => {
   app.listen({ port: 4000 }, () => {
     console.log("Server ready at localhost:4000/graphql");
   });
+
 };
 
 startServer();

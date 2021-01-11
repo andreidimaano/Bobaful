@@ -1,12 +1,10 @@
-import { create } from "domain";
-import { createSchema, Type, typedModel } from "ts-mongoose";
+import { Schema } from "../constants";
+import mongoose from 'mongoose'
 
-//const Cat = mongoose.model("Cat", { name: String });
-
-const CatSchema = createSchema({
-  name: Type.string(),
+const CatSchema = new Schema({
+  name: String,
 });
 
-const Cat = typedModel("Cat", CatSchema);
+export const Cat = mongoose.model("Cat", CatSchema);
 
-export = Cat;
+

@@ -1,6 +1,6 @@
-import Cat from "./models/Cat";
+import { Cat } from "../models/Cat";
 
-export = {
+export const CatResolver = {
   Query: {
     cats: () => Cat.find(),
   },
