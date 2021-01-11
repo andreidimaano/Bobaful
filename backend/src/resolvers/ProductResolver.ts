@@ -1,19 +1,36 @@
-import { Product } from "../entities/Product";
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { ProductInput } from "./ProductInput";
+import { Product } from "../models/Product";
 
-@Resolver()
-export class ProductResolver {
-    @Mutation(() => Product)
-    async createProduct(@Arg('input') input: ProductInput) {
-        
-        return Product.create({
-            ...input
-        }).save();
-    }
-
-    @Query(() => [Product])
-    products() {
-        return Product.find();
-    }
+export interface productArguments {
+  name: string;
+  fanFav?: boolean;
+  chefFav?: boolean;
+  price: number;
+  ounces: number;
+  description: string;
 }
+
+export const ProductResolver = {
+    Query: {
+        products: () => Product.find(),
+    },
+    Mutation: {
+        createProduct: async (_, {args}) => {
+            console.log(args);
+            const product = new Product({
+                name: args.name,
+                description: args.description,
+                price: args.price,
+                ounces: args.ounces,
+                chefFav: args.chefFav,
+                fanFav: args.fanFav,
+            });
+            await product.save();
+            return product;
+        },
+
+        deleteAllProducts: async (): Promise<Boolean> => {
+            await Product.deleteMany({});
+            return true;
+        },
+    },
+};
