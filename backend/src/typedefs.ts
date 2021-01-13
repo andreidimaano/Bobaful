@@ -14,13 +14,13 @@ export const schema = gql`
 
     input ItemArguments {
         quantity: Int!
-        product: Product!
+        product: ProductArguments!
     }
 
     input OrderArguments {
-        items: [Item!]!
+        items: [ItemArguments!]!
         totalPrice: Float!
-        user: User!
+        user: UserArguments!
     }
 
     input UserArguments {
@@ -28,7 +28,7 @@ export const schema = gql`
         email: String!
         phone: String!
         password: String!
-        order: [Order!]
+        order: [OrderArguments]
     }
 
     type Cat {
@@ -65,9 +65,9 @@ export const schema = gql`
     type User {
         name: String!
         email: String!
-        phone: String!
+        phone: String
         password: String!
-        order: [Order!]
+        # order: [Order]
     }
 
     type Query {

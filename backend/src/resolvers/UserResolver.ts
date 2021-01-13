@@ -15,13 +15,15 @@ export const UserResolver = {
     },
     Mutation: {
         createUser: async (_, { args }) => {
+            console.log(args);
             const user = new User({
                 name: args.name,
                 email: args.email,
                 phone: args.phone,
                 password: args.password,
-                order: args.order,
+                //order: args.order,
             });
+            console.log(user);
             await user.save();
             return user;
         },
