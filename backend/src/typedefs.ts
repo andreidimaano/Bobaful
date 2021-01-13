@@ -67,7 +67,7 @@ export const schema = gql`
         email: String!
         phone: String
         password: String!
-        # order: [Order]
+        order: [Order]
     }
 
     type Query {

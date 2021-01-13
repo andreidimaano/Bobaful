@@ -1,7 +1,7 @@
 import { User } from "./../models/User";
 import { OrderSchema } from "src/models/Order";
 
-export interface orderArguments {
+export interface userArguments {
     name: string;
     email: string;
     phone: string;
@@ -21,7 +21,7 @@ export const UserResolver = {
                 email: args.email,
                 phone: args.phone,
                 password: args.password,
-                //order: args.order,
+                order: args.order,
             });
             console.log(user);
             await user.save();

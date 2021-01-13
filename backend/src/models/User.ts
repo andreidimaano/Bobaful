@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Schema } from "../constants";
-import { OrderSchema } from "./Order";
+//import { OrderSchema } from "./Order";
 
 export const UserSchema = new Schema({
     name: String,
