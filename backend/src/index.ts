@@ -6,6 +6,7 @@ import { DogResolver } from "./resolvers/DogResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { UserResolver } from "./resolvers/UserResolver";
 import { OrderResolver } from "./resolvers/OrderResolver";
+import { ItemResolver } from "./resolvers/ItemResolver";
 import { schema } from "./typedefs";
 
 const startServer = async () => {
@@ -19,6 +20,7 @@ const startServer = async () => {
             ProductResolver,
             UserResolver,
             OrderResolver,
+            ItemResolver,
         ],
     });
 
