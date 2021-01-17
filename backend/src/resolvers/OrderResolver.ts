@@ -1,31 +1,30 @@
-import { Order } from "./../models/Order";
 import { ItemSchema } from "./../models/Item";
-import { UserSchema } from "src/models/User";
+import { Order } from "./../models/Order";
 
 export interface orderArguments {
-    items: [typeof ItemSchema];
-    totalPrice: number;
-    user: typeof UserSchema;
+  items: [typeof ItemSchema];
+  totalPrice: number;
+  userId: string;
 }
 
 export const OrderResolver = {
-    Query: {
-        orders: () => Order.find(),
+  Query: {
+    orders: () => Order.find(),
+  },
+  Mutation: {
+    createOrder: async (_, { args }) => {
+      const order = new Order({
+        items: args.items,
+        totalPrice: args.totalPrice,
+        userId: args.userId,
+      });
+      await order.save();
+      return order;
     },
-    Mutation: {
-        createOrder: async (_, { args }) => {
-            const order = new Order({
-                items: args.items,
-                totalPrice: args.totalPrice,
-                user: args.user,
-            });
-            await order.save();
-            return order;
-        },
 
-        deleteAllOrders: async (): Promise<Boolean> => {
-            await Order.deleteMany({});
-            return true;
-        },
+    deleteAllOrders: async (): Promise<Boolean> => {
+      await Order.deleteMany({});
+      return true;
     },
+  },
 };
