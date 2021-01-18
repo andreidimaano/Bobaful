@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { userArguments } from "src/resolvers/UserResolver";
 import { Schema } from "../constants";
 
 export const UserSchema = new Schema({
@@ -6,10 +7,13 @@ export const UserSchema = new Schema({
   email: String,
   phone: String,
   password: String,
-  orderId: {
-    type: [String],
-    required: false,
-  },
+  orders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      required: false,
+    },
+  ],
 });
 
-export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model<userArguments>("User", UserSchema);

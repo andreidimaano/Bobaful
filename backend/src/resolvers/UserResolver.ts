@@ -1,11 +1,13 @@
 import { User } from "../models/User";
+import mongoose from "mongoose";
 
-export interface userArguments {
+export interface userArguments extends mongoose.Document {
   name: string;
   email: string;
   phone: string;
   password: string;
-  orderId: string[];
+  orders: mongoose.Schema.Types.ObjectId[];
+  _doc: any;
 }
 
 export const UserResolver = {
@@ -20,7 +22,7 @@ export const UserResolver = {
         email: args.email,
         phone: args.phone,
         password: args.password,
-        orderId: args.orderId,
+        orders: args.orders,
       });
       console.log(user);
       await user.save();
