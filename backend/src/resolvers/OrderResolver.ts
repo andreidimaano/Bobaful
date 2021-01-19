@@ -7,7 +7,6 @@ export interface orderArguments extends mongoose.Document {
   items: [typeof ItemSchema];
   totalPrice: number;
   user: mongoose.Schema.Types.ObjectId;
-  _doc: any;
 }
 
 export const OrderResolver = {
@@ -27,10 +26,13 @@ export const OrderResolver = {
         user.orders.push(order._id);
         await user?.save();
         return {
-          ...savedOrder._doc,
+          id: savedOrder._id,
+          items: savedOrder.items,
+          totalPrice: savedOrder.totalPrice,
           user: user,
         };
       }
+      return null;
     },
 
     deleteAllOrders: async (): Promise<Boolean> => {

@@ -8,7 +8,6 @@ export interface userArguments extends mongoose.Document {
   phone: string;
   password: string;
   orders: mongoose.Schema.Types.ObjectId[];
-  _doc: any;
 }
 
 export const UserResolver = {
