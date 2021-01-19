@@ -1,10 +1,12 @@
 import { ItemSchema } from "./../models/Item";
 import { Order } from "./../models/Order";
+import mongoose from "mongoose";
+import { User } from "../models/User";
 
-export interface orderArguments {
+export interface orderArguments extends mongoose.Document {
   items: [typeof ItemSchema];
   totalPrice: number;
-  userId: string;
+  user: mongoose.Schema.Types.ObjectId;
 }
 
 export const OrderResolver = {
@@ -16,10 +18,21 @@ export const OrderResolver = {
       const order = new Order({
         items: args.items,
         totalPrice: args.totalPrice,
-        userId: args.userId,
+        user: args.user,
       });
-      await order.save();
-      return order;
+      const savedOrder = await order.save();
+      const user = await User.findById(args.user);
+      if (user) {
+        user.orders.push(order._id);
+        await user?.save();
+        return {
+          id: savedOrder._id,
+          items: savedOrder.items,
+          totalPrice: savedOrder.totalPrice,
+          user: user,
+        };
+      }
+      return null;
     },
 
     deleteAllOrders: async (): Promise<Boolean> => {
