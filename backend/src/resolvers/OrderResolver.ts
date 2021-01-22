@@ -13,7 +13,45 @@ export interface orderArguments extends mongoose.Document {
 
 export const OrderResolver = {
   Query: {
-    orders: () => Order.find(),
+    orders: async () => {
+      let ordersArray: object[] = [];
+      let foundOrders;
+      await Order.find({}, (err, orders) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        foundOrders = orders;
+      });
+      for (let i = 0; i < foundOrders.length; i++) {
+        let curr = foundOrders[i];
+        //construct an order and push it to ordersArray
+        const items: itemArguments[] = [];
+        for (let j = 0; j < curr.items.length; j++) {
+          console.log(curr.items[j]);
+          const foundItem = await Item.findById(curr.items[j]);
+          if (foundItem) {
+            items.push(foundItem);
+          }
+          console.log(foundItem);
+        }
+        for (let j = 0; j < items.length; j++) {
+          const foundProduct = await Product.findById(items[j].product);
+          if (foundProduct) {
+            items[j].product = foundProduct;
+          }
+        }
+        const user = await User.findById(curr.user);
+        let constructedOrder = {
+          id: curr._id,
+          items: items,
+          totalPrice: curr.totalPrice,
+          user: user,
+        };
+        ordersArray.push(constructedOrder);
+      }
+      return ordersArray;
+    },
   },
   Mutation: {
     createOrder: async (_, { args }) => {
@@ -56,13 +94,13 @@ export const OrderResolver = {
         if (err) {
           console.log(err);
         } else {
-          var orderItems = obj.items;
+          let orderItems = obj.items;
           const inputItems = args.items;
           // for each Item passed in:
-          for (var i in inputItems) {
-            var matchFlag = false;
+          for (let i = 0; i < inputItems.length; i++) {
+            let matchFlag = false;
             // check each Item.product
-            for (var j in orderItems) {
+            for (let j = 0; j < orderItems.length; j++) {
               // if there is a match, add the curr Item.quantity to the matched Item.quantity
               // (can be negative, quantity cannot go below zero)
               if (inputItems[i].product.name == orderItems[j].product.name) {
