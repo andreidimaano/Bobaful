@@ -14,11 +14,11 @@ export const schema = gql`
 
   input ItemArguments {
     quantity: Int!
-    product: ProductArguments!
+    product: ID!
   }
 
   input OrderArguments {
-    items: [ItemArguments!]!
+    items: [ID!]!
     totalPrice: Float!
     user: ID!
   }
@@ -52,6 +52,7 @@ export const schema = gql`
   }
 
   type Item {
+    id: ID!
     quantity: Int!
     product: Product!
   }
