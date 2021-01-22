@@ -28,8 +28,7 @@ const startServer = async () => {
 
   try {
     await mongoose.connect(
-      // "mongodb+srv://tedusername:tedpassword@bobaful-test-1.0retk.mongodb.net/test?retryWrites=true&w=majority",
-      "mongodb+srv://admin:testing123@cluster0.sldr5.mongodb.net/test?retryWrites=true&w=majority",
+      "mongodb+srv://tedusername:tedpassword@bobaful-test-1.0retk.mongodb.net/test?retryWrites=true&w=majority",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
