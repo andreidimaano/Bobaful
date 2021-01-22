@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { productArguments } from "src/resolvers/ProductResolver";
 import { Schema } from "../constants";
 
 export const ProductSchema = new Schema({
@@ -16,4 +17,7 @@ export const ProductSchema = new Schema({
   description: String,
 });
 
-export const Product = mongoose.model("Product", ProductSchema);
+export const Product = mongoose.model<productArguments>(
+  "Product",
+  ProductSchema
+);

@@ -8,6 +8,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { OrderResolver } from "./resolvers/OrderResolver";
 import { ItemResolver } from "./resolvers/ItemResolver";
 import { schema } from "./typedefs";
+import { mongoUrl } from "./constants";
 
 const startServer = async () => {
   const app = express();
@@ -27,13 +28,10 @@ const startServer = async () => {
   server.applyMiddleware({ app });
 
   try {
-    await mongoose.connect(
-      "mongodb+srv://tedusername:tedpassword@bobaful-test-1.0retk.mongodb.net/test?retryWrites=true&w=majority",
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
+    await mongoose.connect(mongoUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   } catch (err) {
     console.log(err);
   }
