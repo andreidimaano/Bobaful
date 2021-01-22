@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 import { orderArguments } from "src/resolvers/OrderResolver";
 import { Schema } from "../constants";
-import { ItemSchema } from "./Item";
 
 export const OrderSchema = new Schema({
-  items: {
-    type: [ItemSchema],
-  },
+  items: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
+      required: true,
+    },
+  ],
   totalPrice: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
