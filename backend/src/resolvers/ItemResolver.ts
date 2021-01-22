@@ -22,6 +22,7 @@ export const ItemResolver = {
       const product = await Product.findById(args.product);
       if (product) {
         return {
+          id: savedItem._id,
           quantity: savedItem.quantity,
           product: product,
         };
