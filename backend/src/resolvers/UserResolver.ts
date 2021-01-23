@@ -16,6 +16,11 @@ export const UserResolver = {
   },
   Mutation: {
     createUser: async (_, { args }) => {
+      const existingUser = await User.findOne({ name: args.name });
+      if (existingUser) {
+        //if the name is already taken
+        return null;
+      }
       const hashedPassword = await argon2.hash(args.password);
       console.log(args);
       const user = new User({
@@ -25,11 +30,10 @@ export const UserResolver = {
         password: hashedPassword,
         orders: args.orders,
       });
-      console.log(user);
+
       await user.save();
       return user;
     },
-
     deleteAllUsers: async (): Promise<Boolean> => {
       await User.deleteMany({});
       return true;

@@ -28,9 +28,9 @@ const startServer = async () => {
   server.applyMiddleware({ app });
 
   try {
-    await mongoose.connect(mongoUrl,{
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+    await mongoose.connect(mongoUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
   } catch (err) {
     console.log(err);

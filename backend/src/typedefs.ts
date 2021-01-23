@@ -23,6 +23,11 @@ export const schema = gql`
     user: ID!
   }
 
+  input UpdateOrderArguments {
+    items: [ItemArguments!]
+    userId: String!
+  }
+
   input UserArguments {
     name: String!
     email: String!
@@ -90,6 +95,7 @@ export const schema = gql`
     createItem(args: ItemArguments): Item!
     deleteAllItems: Boolean!
     createOrder(args: OrderArguments): Order!
+    updateOrder(args: UpdateOrderArguments): Boolean!
     deleteAllOrders: Boolean!
     createUser(args: UserArguments): User!
     deleteAllUsers: Boolean!
