@@ -10,7 +10,21 @@ export interface itemArguments extends mongoose.Document {
 
 export const ItemResolver = {
   Query: {
-    items: () => Item.find(),
+    items: async () => {
+      let foundItems;
+      try {
+        foundItems = await Item.find({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      for (let i = 0; i < foundItems.length; i++) {
+        const foundProduct = await Product.findById(foundItems[i].product);
+        if (foundProduct) {
+          foundItems[i].product = foundProduct;
+        }
+      }
+      return foundItems;
+    },
   },
   Mutation: {
     createItem: async (_, { args }) => {
