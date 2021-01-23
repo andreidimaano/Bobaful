@@ -1,6 +1,10 @@
 import { User } from "../models/User";
 import mongoose from "mongoose";
 import argon2 from "argon2";
+import { orderArguments } from "./OrderResolver";
+import { Order } from "../models/Order";
+import { Item } from "../models/Item";
+import { Product } from "../models/Product";
 
 export interface userArguments extends mongoose.Document {
   name: string;
@@ -12,7 +16,44 @@ export interface userArguments extends mongoose.Document {
 
 export const UserResolver = {
   Query: {
-    users: () => User.find(),
+    users: async () => {
+      let userArray: object[] = [];
+      let foundUsers;
+      try {
+        foundUsers = await User.find({});
+      } catch(err) {
+        throw new Error(err);
+      }
+      for(let i = 0; i < foundUsers.length; i++) {
+        let currentUser = foundUsers[i];
+        const orders: orderArguments[] = [];
+        for(let j = 0; j < currentUser.orders.length; j++) {
+          const foundOrder = await Order.findById(currentUser.orders[j]);
+          if(foundOrder) {
+            for(let k = 0; k < foundOrder.items.length; k++) {
+              const foundItem = await Item.findById(foundOrder.items[k]);
+              if(foundItem) {
+                const foundProduct = await Product.findById(foundItem.product);
+                if(foundProduct) {
+                  foundItem.product = foundProduct;
+                  foundOrder.items[k] = foundItem;
+                }
+              }
+            }
+            orders.push(foundOrder);
+          }
+        }
+        let constructedUser = {
+          id: currentUser._id,
+          email: currentUser.email,
+          name: currentUser.name,
+          password: currentUser.password,
+          orders: orders,
+        }
+        userArray.push(constructedUser);
+      }
+      return userArray;
+    }
   },
   Mutation: {
     createUser: async (_, { args }) => {
