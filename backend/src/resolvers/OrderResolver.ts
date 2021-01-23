@@ -6,7 +6,7 @@ import { itemArguments } from "../resolvers/ItemResolver";
 import { Product } from "../models/Product";
 
 export interface orderArguments extends mongoose.Document {
-  items: mongoose.Schema.Types.ObjectId[];
+  items: mongoose.Schema.Types.ObjectId[] | itemArguments[];
   totalPrice: number;
   user: mongoose.Schema.Types.ObjectId;
 }
