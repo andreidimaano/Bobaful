@@ -74,7 +74,6 @@ export const schema = gql`
     name: String!
     email: String!
     phone: String
-    password: String!
     orders: [Order!]!
   }
 
