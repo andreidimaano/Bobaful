@@ -21,20 +21,20 @@ export const UserResolver = {
       let foundUsers;
       try {
         foundUsers = await User.find({});
-      } catch(err) {
+      } catch (err) {
         throw new Error(err);
       }
-      for(let i = 0; i < foundUsers.length; i++) {
+      for (let i = 0; i < foundUsers.length; i++) {
         let currentUser = foundUsers[i];
         const orders: orderArguments[] = [];
-        for(let j = 0; j < currentUser.orders.length; j++) {
+        for (let j = 0; j < currentUser.orders.length; j++) {
           const foundOrder = await Order.findById(currentUser.orders[j]);
-          if(foundOrder) {
-            for(let k = 0; k < foundOrder.items.length; k++) {
+          if (foundOrder) {
+            for (let k = 0; k < foundOrder.items.length; k++) {
               const foundItem = await Item.findById(foundOrder.items[k]);
-              if(foundItem) {
+              if (foundItem) {
                 const foundProduct = await Product.findById(foundItem.product);
-                if(foundProduct) {
+                if (foundProduct) {
                   foundItem.product = foundProduct;
                   foundOrder.items[k] = foundItem;
                 }
@@ -49,17 +49,17 @@ export const UserResolver = {
           name: currentUser.name,
           password: currentUser.password,
           orders: orders,
-        }
+        };
         userArray.push(constructedUser);
       }
       return userArray;
-    }
+    },
   },
   Mutation: {
     createUser: async (_, { args }) => {
-      const existingUser = await User.findOne({ name: args.name });
+      const existingUser = await User.findOne({ email: args.email });
       if (existingUser) {
-        //if the name is already taken
+        //if the email is already taken
         return null;
       }
       const hashedPassword = await argon2.hash(args.password);
@@ -73,6 +73,19 @@ export const UserResolver = {
       });
 
       await user.save();
+      return user;
+    },
+    login: async (_, { email, password }) => {
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        // No such username or email exists, return error
+        return null;
+      }
+      const validPassword = await argon2.verify(user.password, password);
+      if (!validPassword) {
+        // Incorrect password, return error
+        return null;
+      }
       return user;
     },
     deleteAllUsers: async (): Promise<Boolean> => {
