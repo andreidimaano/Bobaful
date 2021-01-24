@@ -1,4 +1,6 @@
 import { Product } from "../models/Product";
+import { Order } from "../models/Order";
+import { Item } from "../models/Item";
 import mongoose from "mongoose";
 
 export interface productArguments extends mongoose.Document {
@@ -30,7 +32,22 @@ export const ProductResolver = {
     },
 
     deleteAllProducts: async (): Promise<Boolean> => {
-      await Product.deleteMany({});
+      //Orders have items which have products
+      try {
+        await Order.deleteMany({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      try {
+        await Item.deleteMany({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      try {
+        await Product.deleteMany({});
+      } catch (err) {
+        throw new Error(err);
+      }
       return true;
     },
   },
