@@ -57,9 +57,9 @@ export const UserResolver = {
   },
   Mutation: {
     createUser: async (_, { args }) => {
-      const existingUser = await User.findOne({ name: args.name });
+      const existingUser = await User.findOne({ email: args.email });
       if (existingUser) {
-        //if the name is already taken
+        //if the email is already taken
         return null;
       }
       const hashedPassword = await argon2.hash(args.password);
@@ -75,12 +75,8 @@ export const UserResolver = {
       await user.save();
       return user;
     },
-    login: async (_, { nameOrEmail, password }) => {
-      const user = await User.findOne(
-        nameOrEmail.includes("@")
-          ? { email: nameOrEmail }
-          : { name: nameOrEmail }
-      );
+    login: async (_, { email, password }) => {
+      const user = await User.findOne({ email: email });
       if (!user) {
         // No such username or email exists, return error
         return null;
@@ -90,7 +86,6 @@ export const UserResolver = {
         // Incorrect password, return error
         return null;
       }
-
       return user;
     },
     deleteAllUsers: async (): Promise<Boolean> => {
