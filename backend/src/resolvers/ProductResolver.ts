@@ -35,15 +35,7 @@ export const ProductResolver = {
       //Orders have items which have products
       try {
         await Order.deleteMany({});
-      } catch (err) {
-        throw new Error(err);
-      }
-      try {
         await Item.deleteMany({});
-      } catch (err) {
-        throw new Error(err);
-      }
-      try {
         await Product.deleteMany({});
       } catch (err) {
         throw new Error(err);

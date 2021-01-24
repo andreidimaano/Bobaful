@@ -129,13 +129,9 @@ export const OrderResolver = {
 
     deleteAllOrders: async (): Promise<Boolean> => {
       let foundOrders;
-      try {
-        foundOrders = await Order.find({});
-      } catch (err) {
-        throw new Error(err);
-      }
       let foundUsers;
       try {
+        foundOrders = await Order.find({});
         foundUsers = await User.find({});
       } catch (err) {
         throw new Error(err);

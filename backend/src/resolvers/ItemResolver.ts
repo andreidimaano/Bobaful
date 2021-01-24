@@ -47,13 +47,9 @@ export const ItemResolver = {
 
     deleteAllItems: async (): Promise<Boolean> => {
       let foundItems;
-      try {
-        foundItems = await Item.find({});
-      } catch (err) {
-        throw new Error(err);
-      }
       let foundOrders;
       try {
+        foundItems = await Item.find({});
         foundOrders = await Order.find({});
       } catch (err) {
         throw new Error(err);
