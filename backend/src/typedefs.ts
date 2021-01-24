@@ -97,6 +97,7 @@ export const schema = gql`
     updateOrder(args: UpdateOrderArguments): Boolean!
     deleteAllOrders: Boolean!
     createUser(args: UserArguments): User!
+    login(nameOrEmail: String!, password: String!): User!
     deleteAllUsers: Boolean!
   }
 `;
