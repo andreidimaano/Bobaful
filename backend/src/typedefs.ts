@@ -7,14 +7,14 @@ export const schema = gql`
     name: String!
     fanFav: Boolean
     chefFav: Boolean
-    price: Float!
-    ounces: Int!
     description: String!
   }
 
   input ItemArguments {
     quantity: Int!
     product: ID!
+    price: Float!
+    ounces: Int!
   }
 
   input OrderArguments {
@@ -36,23 +36,11 @@ export const schema = gql`
     orders: [ID!]
   }
 
-  type Cat {
-    id: ID!
-    name: String!
-  }
-
-  type Dog {
-    id: ID!
-    name: String!
-  }
-
   type Product {
     id: ID!
     name: String!
     fanFav: Boolean
     chefFav: Boolean
-    price: Float!
-    ounces: Int!
     description: String!
   }
 
@@ -60,6 +48,8 @@ export const schema = gql`
     id: ID!
     quantity: Int!
     product: Product!
+    price: Float!
+    ounces: Int!
   }
 
   type Order {
@@ -78,8 +68,6 @@ export const schema = gql`
   }
 
   type Query {
-    cats: [Cat!]!
-    dogs: [Dog!]!
     products: [Product!]!
     items: [Item!]!
     orders: [Order!]!
@@ -87,8 +75,6 @@ export const schema = gql`
   }
 
   type Mutation {
-    createCat(name: String!): Cat!
-    createDog(name: String!): Dog!
     createProduct(args: ProductArguments): Product!
     deleteAllProducts: Boolean!
     createItem(args: ItemArguments): Item!

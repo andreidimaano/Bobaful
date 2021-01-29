@@ -5,8 +5,6 @@ export interface productArguments extends mongoose.Document {
   name: string;
   fanFav?: boolean;
   chefFav?: boolean;
-  price: number;
-  ounces: number;
   description: string;
 }
 
@@ -16,12 +14,9 @@ export const ProductResolver = {
   },
   Mutation: {
     createProduct: async (_, { args }) => {
-      console.log(args);
       const product = new Product({
         name: args.name,
         description: args.description,
-        price: args.price,
-        ounces: args.ounces,
         chefFav: args.chefFav,
         fanFav: args.fanFav,
       });

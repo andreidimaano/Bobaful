@@ -12,8 +12,6 @@ export const ProductSchema = new Schema({
     type: Boolean,
     required: false,
   },
-  price: Number,
-  ounces: Number,
   description: String,
 });
 
