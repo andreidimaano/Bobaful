@@ -9,6 +9,8 @@ export const ItemSchema = new Schema({
     ref: "Product",
     required: true,
   },
+  price: Number,
+  ounces: Number,
 });
 
 export const Item = mongoose.model<itemArguments>("Item", ItemSchema);

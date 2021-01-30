@@ -6,6 +6,8 @@ import { Product } from "../models/Product";
 export interface itemArguments extends mongoose.Document {
   quantity: number;
   product: mongoose.Schema.Types.ObjectId | productArguments;
+  price: Number;
+  ounces: Number;
 }
 
 export const ItemResolver = {
@@ -31,6 +33,8 @@ export const ItemResolver = {
       const item = new Item({
         quantity: args.quantity,
         product: args.product,
+        price: args.price,
+        ounces: args.ounces,
       });
       const savedItem = await item.save();
       const product = await Product.findById(args.product);
@@ -39,6 +43,8 @@ export const ItemResolver = {
           id: savedItem._id,
           quantity: savedItem.quantity,
           product: product,
+          price: savedItem.price,
+          ounces: savedItem.ounces,
         };
       }
       return null;
