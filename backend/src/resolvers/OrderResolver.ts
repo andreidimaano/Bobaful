@@ -166,7 +166,38 @@ export const OrderResolver = {
     },
 
     deleteAllOrders: async (): Promise<Boolean> => {
-      await Order.deleteMany({});
+      let foundOrders;
+      let foundUsers;
+      try {
+        foundOrders = await Order.find({});
+        foundUsers = await User.find({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      // for each order:
+      for (let i = 0; i < foundOrders.length; i++) {
+        // for each user:
+        for (let j = 0; j < foundUsers.length; j++) {
+          // if item id in user.orders, remove it
+          if (foundUsers[j].orders.includes(foundOrders[i]._id)) {
+            // remove the id from user.orders
+            try {
+              await User.updateOne(
+                { _id: foundUsers[j]._id },
+                { $pullAll: { orders: [foundOrders[i]._id] } }
+              );
+            } catch (err) {
+              throw new Error(err);
+            }
+          }
+        }
+        // delete the order
+        try {
+          await Order.deleteOne({ _id: foundOrders[i]._id });
+        } catch (err) {
+          throw new Error(err);
+        }
+      }
       return true;
     },
   },
