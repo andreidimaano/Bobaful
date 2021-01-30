@@ -1,12 +1,12 @@
 import { Product } from "../models/Product";
+import { Order } from "../models/Order";
+import { Item } from "../models/Item";
 import mongoose from "mongoose";
 
 export interface productArguments extends mongoose.Document {
   name: string;
   fanFav?: boolean;
   chefFav?: boolean;
-  price: number;
-  ounces: number;
   description: string;
 }
 
@@ -16,12 +16,9 @@ export const ProductResolver = {
   },
   Mutation: {
     createProduct: async (_, { args }) => {
-      console.log(args);
       const product = new Product({
         name: args.name,
         description: args.description,
-        price: args.price,
-        ounces: args.ounces,
         chefFav: args.chefFav,
         fanFav: args.fanFav,
       });
@@ -29,8 +26,54 @@ export const ProductResolver = {
       return product;
     },
 
+    updateProduct: async (_, { args }) => {
+      //check for args.name or args.id
+      let foundProduct;
+      //use if if available, fall back to name if not
+      if (args.id) {
+        try {
+          foundProduct = await Product.findById(args.id);
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else if (args.name) {
+        try {
+          foundProduct = await Product.findOne({ name: args.name });
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else {
+        console.log("No id or name provided to updateProduct.");
+        return false;
+      }
+
+      if (args.fanFav) {
+        foundProduct.fanFav = args.fanFav;
+      }
+      if (args.chefFav) {
+        foundProduct.chefFav = args.chefFav;
+      }
+      if (args.description) {
+        foundProduct.description = args.description;
+      }
+      try {
+        await foundProduct.save();
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      return true;
+    },
+
     deleteAllProducts: async (): Promise<Boolean> => {
-      await Product.deleteMany({});
+      //Orders have items which have products
+      try {
+        await Order.deleteMany({});
+        await Item.deleteMany({});
+        await Product.deleteMany({});
+      } catch (err) {
+        throw new Error(err);
+      }
       return true;
     },
   },

@@ -89,7 +89,13 @@ export const UserResolver = {
       return user;
     },
     deleteAllUsers: async (): Promise<Boolean> => {
-      await User.deleteMany({});
+      // each order must have a user so deleting all users means also deleting all orders
+      try {
+        await User.deleteMany({});
+        await Order.deleteMany({});
+      } catch (err) {
+        throw new Error(err);
+      }
       return true;
     },
   },
