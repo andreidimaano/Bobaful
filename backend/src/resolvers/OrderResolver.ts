@@ -85,40 +85,78 @@ export const OrderResolver = {
     },
 
     updateOrder: async (_, { args }) => {
-      // retrieve the target order based on passed in userId
-      await Order.findOne({ userId: args.userId }, async (err, obj) => {
-        if (err) {
-          console.log(err);
-        } else {
-          let orderItems = obj.items;
-          const inputItems = args.items;
-          // for each Item passed in:
-          for (let i = 0; i < inputItems.length; i++) {
-            let matchFlag = false;
-            // check each Item.product
-            for (let j = 0; j < orderItems.length; j++) {
-              // if there is a match, add the curr Item.quantity to the matched Item.quantity
-              // (can be negative, quantity cannot go below zero)
-              if (inputItems[i].product.name == orderItems[j].product.name) {
-                orderItems[j].quantity += inputItems[i].quantity;
-                // if quantity goes below or equal to 0, remove that item
-                if (orderItems[j].quantity <= 0) {
-                  orderItems.splice(j, 1);
-                }
-                matchFlag = true;
-                break;
-              }
-            }
-            // else, add the curr Item to the array if the Item.quantity > 0
-            if (matchFlag == false && inputItems[i].quantity > 0) {
-              orderItems.push(inputItems[i]);
-            }
-          }
-          obj.items = orderItems;
-          await obj.save();
+      //find the target order to update
+      let foundOrder;
+      if (args.orderId) {
+        try {
+          foundOrder = await Order.findById(args.orderId);
+        } catch (err) {
+          throw new Error(err);
         }
-      });
+      } else if (args.userId) {
+        try {
+          foundOrder = await Order.findOne({ user: args.userId });
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else {
+        console.log("No order ID or user ID supplied to updateOrder!");
+        return false;
+      }
+
+      if (args.itemId && args.quantity) {
+        //update quantity of an item based on its ID
+        //to delete, use negative quantity (e.g. -999)
+        let orderItems = foundOrder.items;
+        let updatedFlag = false;
+        // iterate through the item ids in the items array
+        for (let i = 0; i < orderItems.length; i++) {
+          //if there is a match, attempt to update the item's quantity
+          if (args.itemId == orderItems[i]) {
+            let foundItem;
+            try {
+              foundItem = await Item.findById(args.itemId);
+            } catch (err) {
+              throw new Error(err);
+            }
+            foundItem.quantity += args.quantity;
+            // if quantity goes below or equal to 0, remove that item
+            if (foundItem.quantity <= 0) {
+              orderItems.splice(i, 1);
+            }
+            try {
+              await foundItem.save();
+            } catch (err) {
+              throw new Error(err);
+            }
+
+            updatedFlag = true;
+            break;
+          }
+        }
+        //if the itemId was not found in the Order's items array
+        if (!updatedFlag) {
+          //if the supplied itemId is a valid and existing item, add that id to the order's items array
+          let foundItem;
+          try {
+            foundItem = await Item.findById(args.itemId);
+          } catch (err) {
+            throw new Error(err);
+          }
+          if (foundItem) {
+            orderItems.push(args.itemId);
+            foundOrder.items = orderItems;
+          }
+        }
+      } else {
+        console.log("You must supply an item ID + quantity.");
+        return false;
+      }
+
+      await foundOrder.save();
       return true;
+
+      //TODO: price updating?
       // add all prices of items then update totalprice
       // retrieve prices of each Item.product in items
       // for each Item in items:
