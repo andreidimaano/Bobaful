@@ -10,6 +10,14 @@ export const schema = gql`
     description: String!
   }
 
+  input UpdateProductArguments {
+    name: String
+    id: ID
+    fanFav: Boolean
+    chefFav: Boolean
+    description: String
+  }
+
   input ItemArguments {
     quantity: Int!
     product: ID!
@@ -76,6 +84,7 @@ export const schema = gql`
 
   type Mutation {
     createProduct(args: ProductArguments): Product!
+    updateProduct(args: UpdateProductArguments): Boolean!
     deleteAllProducts: Boolean!
     createItem(args: ItemArguments): Item!
     deleteAllItems: Boolean!

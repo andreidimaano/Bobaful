@@ -24,6 +24,45 @@ export const ProductResolver = {
       return product;
     },
 
+    updateProduct: async (_, { args }) => {
+      //check for args.name or args.id
+      let foundProduct;
+      //use if if available, fall back to name if not
+      if (args.id) {
+        try {
+          foundProduct = await Product.findById(args.id);
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else if (args.name) {
+        try {
+          foundProduct = await Product.findOne({ name: args.name });
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else {
+        console.log("No id or name provided to updateProduct.");
+        return false;
+      }
+
+      if (args.fanFav) {
+        foundProduct.fanFav = args.fanFav;
+      }
+      if (args.chefFav) {
+        foundProduct.chefFav = args.chefFav;
+      }
+      if (args.description) {
+        foundProduct.description = args.description;
+      }
+      try {
+        await foundProduct.save();
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      return true;
+    },
+
     deleteAllProducts: async (): Promise<Boolean> => {
       await Product.deleteMany({});
       return true;
