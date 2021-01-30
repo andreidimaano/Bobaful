@@ -34,11 +34,6 @@ export const MenuLinks: React.FC<MenuLinksProps> = ({isOpen}) => {
                         HelloWorld
                     </Link>
                 </NextLink>
-                <NextLink href="/">
-                    <Link>
-                        HelloWorld
-                    </Link>
-                </NextLink>
             </Stack>
         </Box>
     );
