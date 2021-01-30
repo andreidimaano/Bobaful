@@ -32,8 +32,11 @@ export const schema = gql`
   }
 
   input UpdateOrderArguments {
-    items: [ItemArguments!]
-    userId: String!
+    orderId: ID
+    userId: String
+    items: [ItemArguments]
+    quantity: Int
+    itemId: ID
   }
 
   input UserArguments {
