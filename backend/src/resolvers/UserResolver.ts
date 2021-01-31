@@ -16,6 +16,13 @@ export interface userArguments extends mongoose.Document {
 
 export const UserResolver = {
   Query: {
+    me: (_, __, { req }) => {
+      // If user is not logged in
+      if (!req.session.userId) {
+        return null;
+      }
+      return User.findById(req.session.userId);
+    },
     users: async () => {
       let userArray: object[] = [];
       let foundUsers;
