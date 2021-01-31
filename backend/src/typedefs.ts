@@ -33,10 +33,6 @@ export const schema = gql`
     itemId: ID!
   }
 
-  input DeleteUserArguments {
-    userId: ID!
-  }
-
   input OrderArguments {
     items: [ID!]!
     totalPrice: Float!
@@ -120,7 +116,7 @@ export const schema = gql`
     deleteAllOrders: Boolean!
     createUser(args: UserArguments): User!
     login(email: String!, password: String!): User!
-    deleteUser(args: DeleteUserArguments): Boolean!
+    logout: Boolean!
     deleteAllUsers: Boolean!
     deleteUser(args: DeleteUserArguments): Boolean!
   }

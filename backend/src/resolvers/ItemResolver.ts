@@ -20,9 +20,11 @@ export const ItemResolver = {
       } catch (err) {
         throw new Error(err);
       }
+      // Find each item's products
       for (let i = 0; i < foundItems.length; i++) {
         const foundProduct = await Product.findById(foundItems[i].product);
         if (foundProduct) {
+          // Replace the objectID with their corresponding product
           foundItems[i].product = foundProduct;
         }
       }
@@ -38,8 +40,10 @@ export const ItemResolver = {
         ounces: args.ounces,
       });
       const savedItem = await item.save();
+      // Find the corresponding product in the item
       const product = await Product.findById(args.product);
       if (product) {
+        // Return an item object with all fields filled
         return {
           id: savedItem._id,
           quantity: savedItem.quantity,

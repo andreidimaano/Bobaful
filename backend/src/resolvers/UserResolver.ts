@@ -5,6 +5,7 @@ import { orderArguments } from "./OrderResolver";
 import { Order } from "../models/Order";
 import { Item } from "../models/Item";
 import { Product } from "../models/Product";
+import { cookieName } from "../constants";
 
 export interface userArguments extends mongoose.Document {
   name: string;
@@ -31,12 +32,14 @@ export const UserResolver = {
       } catch (err) {
         throw new Error(err);
       }
+      // Loop through each user to fill their orders variable
       for (let i = 0; i < foundUsers.length; i++) {
         let currentUser = foundUsers[i];
         const orders: orderArguments[] = [];
         for (let j = 0; j < currentUser.orders.length; j++) {
           const foundOrder = await Order.findById(currentUser.orders[j]);
           if (foundOrder) {
+            // Find the corresponding items and product for each order
             for (let k = 0; k < foundOrder.items.length; k++) {
               const foundItem = await Item.findById(foundOrder.items[k]);
               if (foundItem) {
@@ -57,6 +60,7 @@ export const UserResolver = {
           password: currentUser.password,
           orders: orders,
         };
+        // Push the user to the userArray
         userArray.push(constructedUser);
       }
       return userArray;
@@ -80,9 +84,11 @@ export const UserResolver = {
       });
 
       await user.save();
+      // After creating the user, save a cookie to keep the user logged in
       req.session.userId = user.id;
       return user;
     },
+
     login: async (_, { email, password }, { req }) => {
       const user = await User.findOne({ email: email });
       if (!user) {
@@ -94,8 +100,24 @@ export const UserResolver = {
         // Incorrect password, return error
         return null;
       }
+      // Keep the user logged in using a cookie
       req.session.userId = user.id;
       return user;
+    },
+
+    logout: (_, __, { req, res }) => {
+      return new Promise((resolve) =>
+        req.session.destroy((err) => {
+          res.clearCookie(cookieName);
+          if (err) {
+            console.log(err);
+            // return false if an error occurred, resulting in a failed logout
+            resolve(false);
+          }
+          // return true if everything went through, logging out the user
+          resolve(true);
+        })
+      );
     },
 
     deleteUser: async (_, { args }) => {

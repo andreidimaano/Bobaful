@@ -57,10 +57,13 @@ export const OrderResolver = {
         user: args.user,
       });
       const savedOrder = await order.save();
+      // After creating the order, find the corresponding user to create a dependency
       const user = await User.findById(args.user);
       if (user) {
+        // Save the new order in the user's orders array
         user.orders.push(order._id);
         await user?.save();
+        // Find the products and items that correspond to the order
         const items: itemArguments[] = [];
         for (let i = 0; i < args.items.length; i++) {
           const foundItem = await Item.findById(args.items[i]);
@@ -74,6 +77,7 @@ export const OrderResolver = {
             items[i].product = foundProduct;
           }
         }
+        // Return an order object with all the required fields
         return {
           id: savedOrder._id,
           items: items,
