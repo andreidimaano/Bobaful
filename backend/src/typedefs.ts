@@ -116,6 +116,7 @@ export const schema = gql`
     deleteAllOrders: Boolean!
     createUser(args: UserArguments): User!
     login(email: String!, password: String!): User!
+    logout: Boolean!
     deleteAllUsers: Boolean!
     deleteUser(args: DeleteUserArguments): Boolean!
   }

@@ -6,7 +6,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { OrderResolver } from "./resolvers/OrderResolver";
 import { ItemResolver } from "./resolvers/ItemResolver";
 import { schema } from "./typedefs";
-import { mongoUrl } from "./constants";
+import { mongoUrl, cookieName, secret } from "./constants";
 import session from "express-session";
 import connectMongo from "connect-mongo";
 
@@ -16,7 +16,7 @@ const startServer = async () => {
   const app = express();
   app.use(
     session({
-      name: "qid",
+      name: cookieName,
       store: new MongoStore({
         mongooseConnection: mongoose.connection,
       }),
@@ -27,7 +27,7 @@ const startServer = async () => {
         secure: false, // change if needed during production
       },
       saveUninitialized: false,
-      secret: "qwjfpoqwjfqpowjfqpowijfa", // change in environment variables when in production
+      secret: secret,
       resave: false,
     })
   );

@@ -5,6 +5,7 @@ import { orderArguments } from "./OrderResolver";
 import { Order } from "../models/Order";
 import { Item } from "../models/Item";
 import { Product } from "../models/Product";
+import { cookieName } from "../constants";
 
 export interface userArguments extends mongoose.Document {
   name: string;
@@ -83,6 +84,7 @@ export const UserResolver = {
       req.session.userId = user.id;
       return user;
     },
+
     login: async (_, { email, password }, { req }) => {
       const user = await User.findOne({ email: email });
       if (!user) {
@@ -96,6 +98,19 @@ export const UserResolver = {
       }
       req.session.userId = user.id;
       return user;
+    },
+
+    logout: (_, __, { req, res }) => {
+      return new Promise((resolve) =>
+        req.session.destroy((err) => {
+          res.clearCookie(cookieName);
+          if (err) {
+            console.log(err);
+            resolve(false);
+          }
+          resolve(true);
+        })
+      );
     },
 
     deleteUser: async (_, { args }) => {
