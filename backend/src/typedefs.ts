@@ -63,6 +63,10 @@ export const schema = gql`
     orders: [ID!]
   }
 
+  input DeleteUserArguments {
+    userId: ID!
+  }
+
   type Product {
     id: ID!
     name: String!
