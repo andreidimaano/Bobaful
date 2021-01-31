@@ -100,7 +100,7 @@ export const UserResolver = {
       }
       //delete any orders that belong to the specified user
       for (let i = 0; i < foundOrders.length; i++) {
-        if (foundOrders[i].user == args.userId) {
+        if (foundOrders[i].user == foundUser._id) {
           try {
             await Order.deleteOne({ _id: foundOrders[i]._id });
           } catch (err) {
@@ -111,6 +111,7 @@ export const UserResolver = {
       //delete the user
       try {
         await User.deleteOne({ _id: args.userId });
+        return true;
       } catch (err) {
         throw new Error(err);
       }
