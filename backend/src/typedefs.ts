@@ -63,6 +63,10 @@ export const schema = gql`
     orders: [ID!]
   }
 
+  input DeleteUserArguments {
+    userId: ID!
+  }
+
   type Product {
     id: ID!
     name: String!
@@ -116,6 +120,7 @@ export const schema = gql`
     deleteAllOrders: Boolean!
     createUser(args: UserArguments): User!
     login(email: String!, password: String!): User!
+    deleteUser(args: DeleteUserArguments): Boolean!
     deleteAllUsers: Boolean!
     deleteUser(args: DeleteUserArguments): Boolean!
   }
