@@ -16,6 +16,13 @@ export interface userArguments extends mongoose.Document {
 
 export const UserResolver = {
   Query: {
+    me: (_, __, { req }) => {
+      // If user is not logged in
+      if (!req.session.userId) {
+        return null;
+      }
+      return User.findById(req.session.userId);
+    },
     users: async () => {
       let userArray: object[] = [];
       let foundUsers;
@@ -56,7 +63,7 @@ export const UserResolver = {
     },
   },
   Mutation: {
-    createUser: async (_, { args }) => {
+    createUser: async (_, { args }, { req }) => {
       const existingUser = await User.findOne({ email: args.email });
       if (existingUser) {
         //if the email is already taken
@@ -73,9 +80,10 @@ export const UserResolver = {
       });
 
       await user.save();
+      req.session.userId = user.id;
       return user;
     },
-    login: async (_, { email, password }) => {
+    login: async (_, { email, password }, { req }) => {
       const user = await User.findOne({ email: email });
       if (!user) {
         // No such username or email exists, return error
@@ -86,6 +94,7 @@ export const UserResolver = {
         // Incorrect password, return error
         return null;
       }
+      req.session.userId = user.id;
       return user;
     },
 

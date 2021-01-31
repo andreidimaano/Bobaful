@@ -99,6 +99,7 @@ export const schema = gql`
     items: [Item!]!
     orders: [Order!]!
     users: [User!]!
+    me: User
   }
 
   type Mutation {

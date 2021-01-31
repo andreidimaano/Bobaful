@@ -7,13 +7,38 @@ import { OrderResolver } from "./resolvers/OrderResolver";
 import { ItemResolver } from "./resolvers/ItemResolver";
 import { schema } from "./typedefs";
 import { mongoUrl } from "./constants";
+import redis from "redis";
+import session from "express-session";
+import connectRedis from "connect-redis";
+
+let RedisStore = connectRedis(session);
+let redisClient = redis.createClient();
 
 const startServer = async () => {
   const app = express();
+  app.use(
+    session({
+      name: "qid",
+      store: new RedisStore({
+        client: redisClient,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+        httpOnly: true,
+        sameSite: "lax", // csrf
+        secure: false, // change if needed during production
+      },
+      saveUninitialized: false,
+      secret: "qwjfpoqwjfqpowjfqpowijfa", // change in environment variables when in production
+      resave: false,
+    })
+  );
 
   const server = new ApolloServer({
     typeDefs: schema,
     resolvers: [ProductResolver, UserResolver, OrderResolver, ItemResolver],
+    context: ({ req, res }) => ({ req, res }),
   });
 
   server.applyMiddleware({ app });
