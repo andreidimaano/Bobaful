@@ -88,6 +88,34 @@ export const UserResolver = {
       }
       return user;
     },
+
+    deleteUser: async (_, { args }) => {
+      let foundUser;
+      let foundOrders;
+      try {
+        foundUser = await User.findById(args.userId);
+        foundOrders = await Order.find({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      //delete any orders that belong to the specified user
+      for (let i = 0; i < foundOrders.length; i++) {
+        if (foundOrders[i].user == args.userId) {
+          try {
+            await Order.deleteOne({ _id: foundOrders[i]._id });
+          } catch (err) {
+            throw new Error(err);
+          }
+        }
+      }
+      //delete the user
+      try {
+        await User.deleteOne({ _id: args.userId });
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+
     deleteAllUsers: async (): Promise<Boolean> => {
       // each order must have a user so deleting all users means also deleting all orders
       try {

@@ -65,6 +65,58 @@ export const ProductResolver = {
       return true;
     },
 
+    //this function is ineffecient, but efficiency does not matter for such a rarely used function
+    deleteProduct: async (_, { args }) => {
+      let foundItems;
+      let foundOrders;
+      try {
+        foundItems = await Item.find({});
+        foundOrders = await Order.find({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      //Iterate through items and delete (any items containing the product) from orders
+      for (let i = 0; i < foundItems.length; i++) {
+        if (foundItems[i].product == args.productId) {
+          for (let j = 0; j < foundOrders.length; j++) {
+            if (foundOrders[j].items.includes(foundItems[i]._id)) {
+              let updatedOrder;
+              try {
+                await Order.updateOne(
+                  { _id: foundOrders[j]._id },
+                  { $pullAll: { items: [foundItems[i]._id] } }
+                );
+                updatedOrder = await Order.findById(foundOrders[j]._id);
+              } catch (err) {
+                throw new Error(err);
+              }
+              // delete the order if it has no items
+              if (updatedOrder.items.length < 1) {
+                try {
+                  await Order.deleteOne({ _id: updatedOrder._id });
+                } catch (err) {
+                  throw new Error(err);
+                }
+              }
+            }
+          }
+          //delete the Item that contains the product
+          try {
+            await Item.deleteOne({ _id: foundItems[i]._id });
+          } catch (err) {
+            throw new Error(err);
+          }
+        }
+      }
+      //finally, delete the product
+      try {
+        await Product.deleteOne({ _id: args.productId });
+      } catch (err) {
+        throw new Error(err);
+      }
+      return true;
+    },
+
     deleteAllProducts: async (): Promise<Boolean> => {
       //Orders have items which have products
       try {

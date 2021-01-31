@@ -51,6 +51,41 @@ export const ItemResolver = {
       return null;
     },
 
+    deleteItem: async (_, { args }) => {
+      let foundItem;
+      let foundOrders;
+      try {
+        foundItem = await Item.findById(args.itemId);
+        foundOrders = await Order.find({});
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      // for each order:
+      for (let i = 0; i < foundOrders.length; i++) {
+        // if item id in order.items, remove it
+        if (foundOrders[i].items.includes(foundItem._id)) {
+          //remove the id from the order.items
+          try {
+            await Order.updateOne(
+              { _id: foundOrders[i]._id },
+              { $pullAll: { items: [foundItem._id] } }
+            );
+          } catch (err) {
+            throw new Error(err);
+          }
+        }
+      }
+      //delete the item
+      try {
+        await Item.deleteOne({ _id: foundItem._id });
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      return true;
+    },
+
     deleteAllItems: async (): Promise<Boolean> => {
       let foundItems;
       let foundOrders;

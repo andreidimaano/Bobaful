@@ -165,6 +165,40 @@ export const OrderResolver = {
       //totalPrice = newTotal
     },
 
+    deleteOrder: async (_, { args }) => {
+      let foundOrder;
+      let foundUsers;
+      try {
+        foundOrder = await Order.findById(args.orderId);
+        foundUsers = await User.find({});
+      } catch (err) {
+        throw new Error(err);
+      }
+      // for each user:
+      for (let i = 0; i < foundUsers.length; i++) {
+        // if item id in user.orders, remove it
+        if (foundUsers[i].orders.includes(foundOrder._id)) {
+          // remove the id from user.orders
+          try {
+            await User.updateOne(
+              { _id: foundUsers[i]._id },
+              { $pullAll: { orders: [foundOrder._id] } }
+            );
+          } catch (err) {
+            throw new Error(err);
+          }
+        }
+      }
+      // delete the order
+      try {
+        await Order.deleteOne({ _id: foundOrder._id });
+      } catch (err) {
+        throw new Error(err);
+      }
+
+      return true;
+    },
+
     deleteAllOrders: async (): Promise<Boolean> => {
       let foundOrders;
       let foundUsers;
