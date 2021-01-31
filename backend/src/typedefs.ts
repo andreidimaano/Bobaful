@@ -33,10 +33,6 @@ export const schema = gql`
     itemId: ID!
   }
 
-  input DeleteUserArguments {
-    userId: ID!
-  }
-
   input OrderArguments {
     items: [ID!]!
     totalPrice: Float!
