@@ -7,21 +7,18 @@ import { OrderResolver } from "./resolvers/OrderResolver";
 import { ItemResolver } from "./resolvers/ItemResolver";
 import { schema } from "./typedefs";
 import { mongoUrl } from "./constants";
-import redis from "redis";
 import session from "express-session";
-import connectRedis from "connect-redis";
+import connectMongo from "connect-mongo";
 
-let RedisStore = connectRedis(session);
-let redisClient = redis.createClient();
+const MongoStore = connectMongo(session);
 
 const startServer = async () => {
   const app = express();
   app.use(
     session({
       name: "qid",
-      store: new RedisStore({
-        client: redisClient,
-        disableTouch: true,
+      store: new MongoStore({
+        mongooseConnection: mongoose.connection,
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
