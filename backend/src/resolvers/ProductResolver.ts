@@ -67,6 +67,11 @@ export const ProductResolver = {
 
     //this function is ineffecient, but efficiency does not matter for such a rarely used function
     deleteProduct: async (_, { args }) => {
+      try {
+        await Product.findOne({ _id: args.productId });
+      } catch (err) {
+        throw new Error(err);
+      }
       let foundItems;
       let foundOrders;
       try {
