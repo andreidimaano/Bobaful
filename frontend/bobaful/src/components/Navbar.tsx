@@ -1,4 +1,5 @@
-import { Box, Flex, Link, MenuItem, Stack } from '@chakra-ui/react';
+import { StarIcon } from '@chakra-ui/icons';
+import { Box, Flex, Link, MenuItem, Slide, Stack, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import { Logo } from './navbar-components/Logo';
 import { MenuLinks } from './navbar-components/MenuLinks';
@@ -10,9 +11,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggle = () => setIsOpen(!isOpen);
+    const {isOpen, onToggle} = useDisclosure()
 
     return (
         <Flex
@@ -21,16 +20,16 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             justify="space-between"
             wrap="wrap"
             w="100%"
-            mb={8}
-            p={8}
-            color={["black", "black", "primary.700", "primary.700"]}
+            p={4}
+            height={16}
+            borderBottom="2px" 
+            borderColor="gray.200"
         >
-            <Logo 
-                w="100px"
+            <MenuToggle toggle={onToggle} isOpen={isOpen} />
+            <Logo
                 color={["black"]}
             />
-            <MenuToggle toggle={toggle} isOpen={isOpen} />
-            <MenuLinks isOpen={isOpen} />
+            <StarIcon boxSize={6}/>
         </Flex>
     );
 } 
