@@ -10,10 +10,10 @@ export const MenuLinks: React.FC<MenuLinksProps> = () => {
             <Box
                 pos="fixed"
                 left={0}
-                top={16}
+                top={0}
                 overflow={"auto"}
                 py={5}
-                width={80}
+                width={"350px"}
                 minH={"100%"}
                 borderRight="2px"
                 borderColor="gray.200"
