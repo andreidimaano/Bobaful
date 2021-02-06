@@ -1,16 +1,43 @@
 <h1 align="center">GraphQL Relations</h1>
 
-<p>When we create a product, arguments such as name, price, description, ounces, fan favorite, and chef favorite are passed in, which all combine to become one product that we can reference later.</p>
-<p>
+<h2>PRODUCT</h2>
+
+<h3>createProduct</h3>
+<p>When we create a product, the arguments such as name, description, fan favorite, and chef favorite are passed in, which all combine to become one product that we can reference later via the product's ID.</p>
+<p align="center">
   <img src="/backend/images/createProduct.png">
 </p>
 
+<h3>updateProduct</h3>
+<p>To update a product, we must first pass in a product name or product id. Then we pass one or more fields that we wish to change along with their updated value. If the operation succeeds, the mutation returns true.</p>
+<p align="center">
+  <img src="/backend/images/updateProduct.png">
+</p>
+<p align="center">
+  <img src="/backend/images/updateProduct2.png">
+</p>
+
+<h3>deleteProduct</h3>
+<p>Pass in the productId.</p>
+
+<h3>deleteAllProducts</h3>
+<p>No arguments needed. Proceed with caution.</p>
+
 <hr>
 
-<p>When we create an item, we reference a product with its ObjectID, creating a relation between items and products. Items specify a quantity of products, which we will use later to create orders.</p>
+<h2>ITEM</h2>
+
+<h3>createItem</h3>
+<p>When we create an item, we reference a product with its ObjectID, creating a relation between items and products. Items specify a quantity of products, which we will use later to create orders. Items also store price and ounces.</p>
 <p align="center">
   <img src="/backend/images/createItem.png">
 </p>
+
+<h3>deleteItem</h3>
+<p>Pass in the itemId.</p>
+
+<h3>deleteAllItems</h3>
+<p>No arguments needed. Proceed with caution.</p>
 
 <hr>
 
