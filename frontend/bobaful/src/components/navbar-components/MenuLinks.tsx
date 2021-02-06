@@ -1,6 +1,6 @@
-import { Box, Link, Slide, Stack } from '@chakra-ui/react';
-import React from 'react'
+import { Box, Link, Stack } from '@chakra-ui/react';
 import NextLink from "next/link";
+import React from 'react';
 
 interface MenuLinksProps {
 }
@@ -17,6 +17,12 @@ export const MenuLinks: React.FC<MenuLinksProps> = () => {
                 minH={"100%"}
                 borderRight="2px"
                 borderColor="gray.200"
+                bg="white"
+                sx={{
+                    "@media screen and (max-width: 768px)": {
+                        width: "100%",
+                    }
+                }}
             >
                 <Stack
                     spacing={8}

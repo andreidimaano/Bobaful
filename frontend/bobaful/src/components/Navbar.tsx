@@ -1,8 +1,8 @@
 import { StarIcon } from '@chakra-ui/icons';
-import { Box, Flex, Link, MenuItem, Slide, Stack, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Flex } from '@chakra-ui/react';
+import React from 'react';
+import { DarkModeSwitch } from './DarkModeSwitch';
 import { Logo } from './navbar-components/Logo';
-import { MenuLinks } from './navbar-components/MenuLinks';
 import { MenuToggle } from './navbar-components/MenuToggle';
 
 

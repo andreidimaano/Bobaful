@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/pages/menu.jsx"  ],
+, "src/pages/menu.jsx", "src/components/DarkModeSwitch.tsx"  ],
   "exclude": [
     "node_modules"
   ]

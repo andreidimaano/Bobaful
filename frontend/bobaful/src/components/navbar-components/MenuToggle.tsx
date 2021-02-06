@@ -1,7 +1,6 @@
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons"
-import { Box, Button, Slide, useDisclosure, Text } from "@chakra-ui/react"
+import { Box, Button, Slide, useDisclosure } from "@chakra-ui/react"
 import React from "react"
-import Menu from "../../pages/menu"
 import { MenuLinks } from "./MenuLinks"
 
 export const MenuToggle = () => {
