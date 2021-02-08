@@ -1,6 +1,7 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, DarkMode, Divider, Flex, Heading, Stat, StatNumber, Text } from '@chakra-ui/react';
 import Image from 'next/image'
 import React from 'react'
+import { Navbar } from '../components/Navbar';
 
 
 interface menuProps {
@@ -14,38 +15,50 @@ const Menu: React.FC<menuProps> = ({}) => {
         alt: "red boba",
     }
     return (
+        <>
+        <Navbar />
         <Box>
-            <Flex>
-                <Image src="/images/red_boba.png" alt={boba.alt} width="369" height="539"/>
+            <Flex justify="space-between" align="center" p={4}>
                 <Flex direction="column">
-                    <Box px={8}>
-                        <Text>Thai Oat</Text>
+                    <Box width="400px">
+                        <Heading size="md" >Thai Oat</Heading>
                         <Text>A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
-                        <Text>$10.00</Text> 
+                        <Stat>
+                            <StatNumber>$10.00</StatNumber> 
+                        </Stat>
                     </Box>
                 </Flex>
+                <Image src="/images/red_boba.png" alt={boba.alt} width="125" height="125"/>
             </Flex>
-            <Flex>
-                <Image src="/images/red_boba.png" alt={boba.alt} width="369" height="539"/>
+            <Divider />
+            <Flex justify="space-between" align="center" p={4}>
                 <Flex direction="column">
-                    <Box px={8}>
-                        <Text>Thai Oat</Text>
+                    <Box width="400px">
+                        <Heading size="md" >Thai Oat</Heading>
                         <Text>A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
-                        <Text>$10.00</Text> 
+                        <Stat>
+                            <StatNumber>$10.00</StatNumber> 
+                        </Stat>
                     </Box>
                 </Flex>
+                <Image src="/images/red_boba.png" alt={boba.alt} width="125" height="125"/>
             </Flex>
-            <Flex>
-                <Image src="/images/red_boba.png" alt={boba.alt} width="369" height="539"/>
+            <Divider />
+            <Flex justify="space-between" align="center" p={4}>
                 <Flex direction="column">
-                    <Box px={8}>
-                        <Text>Thai Oat</Text>
+                    <Box width="400px">
+                        <Heading size="md" >Thai Oat</Heading>
                         <Text>A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
-                        <Text>$10.00</Text> 
+                        <Stat>
+                            <StatNumber>$10.00</StatNumber> 
+                        </Stat>
                     </Box>
                 </Flex>
+                <Image src="/images/red_boba.png" alt={boba.alt} width="125" height="125"/>
             </Flex>
+            <Divider />
         </Box>
+        </>
     );
 }
 

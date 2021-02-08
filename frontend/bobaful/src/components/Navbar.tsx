@@ -1,8 +1,8 @@
 import { StarIcon } from '@chakra-ui/icons';
-import { Box, Flex, Link, MenuItem, Slide, Stack, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Flex } from '@chakra-ui/react';
+import React from 'react';
+import { DarkModeSwitch } from './DarkModeSwitch';
 import { Logo } from './navbar-components/Logo';
-import { MenuLinks } from './navbar-components/MenuLinks';
 import { MenuToggle } from './navbar-components/MenuToggle';
 
 
@@ -11,8 +11,6 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-    const {isOpen, onToggle} = useDisclosure()
-
     return (
         <Flex
             as="nav"
@@ -20,12 +18,12 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             justify="space-between"
             wrap="wrap"
             w="100%"
-            p={4}
+            px={4}
             height={16}
             borderBottom="2px" 
             borderColor="gray.200"
         >
-            <MenuToggle toggle={onToggle} isOpen={isOpen} />
+            <MenuToggle/>
             <Logo
                 color={["black"]}
             />
