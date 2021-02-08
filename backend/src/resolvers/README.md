@@ -1,4 +1,4 @@
-<h1 align="center">GraphQL Relations</h1>
+<h1 align="center">GraphQL Functionality</h1>
 
 <h2>PRODUCT</h2>
 
@@ -41,13 +41,41 @@
 
 <hr>
 
+<h2>USER</h2>
+
+<h3>createUser</h3>
 <p>To create a user, a name, email, phone, and password will be required. Using argon2, passwords will be hashed and and an empty orders array will be initialized, which will be allocated once users make their orders.</p>
 <p align="center">
   <img src="/backend/images/createUser.png">
 </p>
 
+<h3>login</h3>
+<p>When a user logs in, a cookie will be created using Express Session, which allows users to stay logged in and certifies that a user has been authenticated.</p>
+<p align="center">
+  <img src="/backend/images/login.png">
+</p>
+
+<h3>logout</h3>
+<p>If a user decides to log out, the logout mutation will remove the cookie that acknowledged that the user was logged in. The mutation will then return true to signal that the user has officially been logged out.</p>
+<p align="center">
+  <img src="/backend/images/logout.png">
+</p>
+
+<h3>me query</h3>
+<p>If a user is logged in, the me query will use the cookie that was created during their authentication to keep them logged in.</p>
+<p align="center">
+  <img src="/backend/images/me1.png">
+</p>
+<p>If a user is logged out, however, the me query will simply return null, signifying that the user currently has no cookie that can log them in.</p>
+<p align="center">
+  <img src="/backend/images/me2.png">
+</p>
+
 <hr>
 
+<h2>ORDER</h2>
+
+<h3>createOrder</h3>
 <p>When creating an order, references to items, total price, and a user that created the order will be passed in. Orders are able to reference the items and the user who made the order, all of which will be used when carrying out orders. 
 <p align="center">
   <img src="/backend/images/createOrder.png">
