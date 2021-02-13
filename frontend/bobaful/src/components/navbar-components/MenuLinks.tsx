@@ -1,6 +1,9 @@
-import { Box, Link, Stack } from '@chakra-ui/react';
+import { Box, Divider, Flex, Icon, Link, Stack,Text } from '@chakra-ui/react';
 import NextLink from "next/link";
 import React from 'react';
+import {BsFillPersonFill} from "react-icons/bs"
+import {AiFillHome} from "react-icons/ai"
+import {FaReceipt} from "react-icons/fa"
 
 interface MenuLinksProps {
 }
@@ -33,17 +36,28 @@ export const MenuLinks: React.FC<MenuLinksProps> = () => {
                 >
                     <NextLink href="/">
                         <Link>
-                            HelloWorld
+                            <Flex direction="row" align="center">
+                                <Icon as={AiFillHome} boxSize={8} mr={4}/>
+                                <Text fontWeight={"bold"}>Home</Text>
+                            </Flex>
                         </Link>
                     </NextLink>
-                    <NextLink href="/">
+                    <Divider />
+                    <NextLink href="/menu">
                         <Link>
-                            HelloWorld
+                            <Flex direction="row" align="center">
+                                <Icon as={FaReceipt} boxSize={8} mr={4}/>
+                                <Text fontWeight={"bold"}>Order</Text>
+                            </Flex>
                         </Link>
                     </NextLink>
+                    <Divider />
                     <NextLink href="/">
                         <Link>
-                            HelloWorld
+                            <Flex direction="row" align="center">
+                                <Icon as={BsFillPersonFill} boxSize={8} mr={4}/>
+                                <Text fontWeight={"bold"}>Sign Up or Sign In</Text>
+                            </Flex>
                         </Link>
                     </NextLink>
                 </Stack>
