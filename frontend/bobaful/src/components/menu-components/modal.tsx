@@ -3,10 +3,10 @@ import Image from 'next/image'
 import React from 'react'
 
 interface modalProps {
-
+    price: string
 }
 
-export const MenuItemModal: React.FC<modalProps> = ({}) => {
+export const MenuItemModal: React.FC<modalProps> = ({price}) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
     return (
         <>
@@ -16,7 +16,7 @@ export const MenuItemModal: React.FC<modalProps> = ({}) => {
                     <Heading size="md" >Thai Oat</Heading>
                     <Text>A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
                     <Stat>
-                        <StatNumber>$10.00</StatNumber> 
+                        <StatNumber>${price}</StatNumber> 
                     </Stat>
                 </Box>
             </Flex>
@@ -43,7 +43,7 @@ export const MenuItemModal: React.FC<modalProps> = ({}) => {
                 <ModalFooter>
                     <Button colorScheme="red" mr={3} onClick={onClose}>
                         <Text fontWeight={"bold"} >Add to Cart - </Text>
-                        <Text fontWeight={"bold"} >$10.00</Text>
+                        <Text fontWeight={"bold"} >${price}</Text>
                     </Button>
                 </ModalFooter>
             </ModalContent>
