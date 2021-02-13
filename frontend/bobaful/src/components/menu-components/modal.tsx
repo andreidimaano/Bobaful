@@ -8,6 +8,7 @@ interface modalProps {
 
 export const MenuItemModal: React.FC<modalProps> = ({price}) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
+    let width =  (360 / 539 * 300).toString();
     return (
         <>
         <Flex as="button" width={"100%"} onClick={onOpen} justify="space-between" align="center" p={4}>
@@ -36,7 +37,7 @@ export const MenuItemModal: React.FC<modalProps> = ({price}) => {
                 <ModalHeader> Thai Oat</ModalHeader>
                 <ModalBody align="center">
                     <Box maxH={"539px"}>
-                        <Image src="/images/red_boba.png" alt={"boba picture"} object-fit={"cover"} width={"auto"} height="300"/>
+                        <Image src="/images/red_boba.png" alt={"boba picture"} object-fit={"cover"} width={width} height="300"/>
                     </Box>
                     <Text textAlign="left">A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
                 </ModalBody>
