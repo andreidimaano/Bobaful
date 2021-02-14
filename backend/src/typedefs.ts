@@ -94,6 +94,16 @@ export const schema = gql`
     orders: [Order!]!
   }
 
+  type AuthenticationError {
+    field: String!
+    message: String!
+  }
+
+  type UserResponse {
+    errors: [AuthenticationError!]
+    user: User
+  }
+
   type Query {
     products: [Product!]!
     items: [Item!]!
@@ -114,8 +124,8 @@ export const schema = gql`
     updateOrder(args: UpdateOrderArguments): Boolean!
     deleteOrder(args: DeleteOrderArguments): Boolean!
     deleteAllOrders: Boolean!
-    createUser(args: UserArguments): User!
-    login(email: String!, password: String!): User!
+    createUser(args: UserArguments): UserResponse!
+    login(email: String!, password: String!): UserResponse!
     logout: Boolean!
     deleteAllUsers: Boolean!
     deleteUser(args: DeleteUserArguments): Boolean!
