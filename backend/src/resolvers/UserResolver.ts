@@ -72,7 +72,22 @@ export const UserResolver = {
       if (existingUser) {
         //if the email is already taken
         return {
-          errors: [{ field: "email", message: "email already taken" }],
+          errors: [
+            {
+              field: "email",
+              message: "email already taken",
+            },
+          ],
+        };
+      }
+      if (args.password.length < 8) {
+        return {
+          errors: [
+            {
+              field: "password",
+              message: "password length must be 8 or greater",
+            },
+          ],
         };
       }
       const hashedPassword = await argon2.hash(args.password);
