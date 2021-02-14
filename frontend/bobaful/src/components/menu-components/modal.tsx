@@ -1,28 +1,48 @@
 import { Flex, Box, Heading, Stat, StatNumber, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalHeader, ModalBody, ModalFooter, Button, Text, useDisclosure, useNumberInput, Input } from '@chakra-ui/react';
+import Dinero from 'dinero.js';
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface modalProps {
-    price: string
+    priceString: string
 }
 
-export const MenuItemModal: React.FC<modalProps> = ({price}) => {
+export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
+    let price = parseInt(priceString);
     let width =  (360 / 539 * 300).toString();
-    const {
-        getInputProps,
-        getIncrementButtonProps,
-        getDecrementButtonProps,
-    } = useNumberInput({
-        step: 1,
-        defaultValue: 1,
-        min: 1,
-        max: 6,
-    })
 
-    const inc = getIncrementButtonProps();
-    const dec = getDecrementButtonProps();
-    const input = getInputProps();
+    let [state, setQuantity] = useState({quantity: 1, totalPrice: price});
+    let changePrice = (event) => {
+        setQuantity({quantity: event.target.value, totalPrice: price * event.target.value});
+    } 
+
+    let [isDecDisabled, setDecDisabled] = useState(false);
+    let [isIncDisabled, setIncDisabled] = useState(false);
+    
+    let decreasePrice = () => {
+        let newQuantity = state.quantity - 1;
+        if(isIncDisabled) {
+            console.log("bad");
+            setIncDisabled(!isIncDisabled);
+        }
+        setQuantity({quantity: newQuantity, totalPrice: price * newQuantity});
+        if(state.quantity - 1 == 1) {
+            setDecDisabled(!isDecDisabled);
+        }
+    }
+
+    let increasePrice = () => {
+        let newQuantity = state.quantity + 1;
+        if(isDecDisabled) {
+            setDecDisabled(!isDecDisabled);
+        }
+        if(state.quantity + 1 == 6) {
+            setIncDisabled(!isIncDisabled);
+        }
+        setQuantity({quantity: newQuantity, totalPrice: price * newQuantity});
+    }
+
 
     return (
         <>
@@ -58,12 +78,12 @@ export const MenuItemModal: React.FC<modalProps> = ({price}) => {
                 </ModalBody>
                 <ModalFooter>
                     <Flex direction="row" justifyContent="flex-end" align="center">
-                        <Button {...dec}mr={2}>-</Button>
-                        <Input textAlign="center" maxW="52px" {...input} />
-                        <Button {...inc} ml={2}>+</Button>
+                        <Button isDisabled={isDecDisabled} onClick={decreasePrice} mr={2}>-</Button>
+                        <Input value={state.quantity} onChange={changePrice} textAlign="center" maxW="52px" />
+                        <Button isDisabled={isIncDisabled} onClick={increasePrice}  ml={2}>+</Button>
                         <Button ml={8} colorScheme="red" mr={2} onClick={onClose}>
                             <Text fontWeight={"bold"} >Add to Cart - </Text>
-                            <Text fontWeight={"bold"} >${price}</Text>
+                            <Text fontWeight={"bold"} >${state.totalPrice}</Text>
                         </Button>
                     </Flex>
                 </ModalFooter>
