@@ -12,8 +12,6 @@
     "@chakra-ui/react": "^1.0.0",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
-    "@types/dinero.js": "^1.6.5",
-    "dinero.js": "^1.8.1",
     "formik": "^2.2.6",
     "framer-motion": "^2.9.4",
     "next": "latest",

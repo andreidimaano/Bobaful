@@ -1,7 +1,6 @@
-import { Flex, Box, Heading, Stat, StatNumber, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalHeader, ModalBody, ModalFooter, Button, Text, useDisclosure, useNumberInput, Input } from '@chakra-ui/react';
-import Dinero from 'dinero.js';
-import Image from 'next/image'
-import React, { useState } from 'react'
+import { Box, Button, Flex, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stat, StatNumber, Text, useDisclosure } from '@chakra-ui/react';
+import Image from 'next/image';
+import React, { useState } from 'react';
 
 interface modalProps {
     priceString: string
@@ -13,12 +12,6 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
     let width =  (360 / 539 * 300).toString();
 
     let [state, setQuantity] = useState({quantity: 1, totalPrice: (price / 100).toFixed(2)});
-    let changePrice = (event) => {
-        if(event.target.value != '-') {
-            setQuantity({quantity: event.target.value, totalPrice: Math.abs(price * event.target.value / 100).toFixed(2)});
-        }
-    } 
-
     let [isDecDisabled, setDecDisabled] = useState(true);
     let [isIncDisabled, setIncDisabled] = useState(false);
     
@@ -80,7 +73,7 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
                 <ModalFooter>
                     <Flex direction="row" justifyContent="flex-end" align="center">
                         <Button isDisabled={isDecDisabled} onClick={decreasePrice} mr={2}>-</Button>
-                        <Input type={"number"} value={state.quantity} onChange={changePrice} textAlign="center" maxW="52px" isReadOnly={true}/>
+                        <Input type={"number"} value={state.quantity} textAlign="center" maxW="52px" isReadOnly={true}/>
                         <Button isDisabled={isIncDisabled} onClick={increasePrice}  ml={2}>+</Button>
                         <Button ml={8} colorScheme="red" mr={2} onClick={onClose}>
                             <Text fontWeight={"bold"} >Add to Cart - </Text>
