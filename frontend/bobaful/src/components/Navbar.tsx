@@ -1,9 +1,10 @@
 import { StarIcon } from '@chakra-ui/icons';
-import { Flex } from '@chakra-ui/react';
+import { Button, Flex, Icon } from '@chakra-ui/react';
 import React from 'react';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import { Logo } from './navbar-components/Logo';
 import { MenuToggle } from './navbar-components/MenuToggle';
+import {FaShoppingCart} from "react-icons/fa"
 
 
 interface NavbarProps {
@@ -27,7 +28,9 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             <Logo
                 color={["black"]}
             />
-            <StarIcon boxSize={6}/>
+            <Button variant="solid" colorScheme="red">
+                <Icon color="white" as={FaShoppingCart} boxSize={6} />
+            </Button>
         </Flex>
     );
 } 
