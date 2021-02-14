@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stat, StatNumber, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Stat, StatNumber, Text, useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
@@ -8,14 +8,21 @@ interface modalProps {
 
 export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
-    let price = parseInt(priceString);
+    // let price = parseInt(priceString);
     let width =  (360 / 539 * 300).toString();
 
+    let [price, setPrice] = useState(parseInt(priceString));
     let [state, setQuantity] = useState({quantity: 1, totalPrice: (price / 100).toFixed(2)});
     let [isDecDisabled, setDecDisabled] = useState(true);
     let [isIncDisabled, setIncDisabled] = useState(false);
-    
-    let decreasePrice = () => {
+
+    let changePrice = (value: string) => {
+        let newPrice = parseInt(value);
+        setPrice(newPrice);
+        setQuantity({quantity: state.quantity, totalPrice: (newPrice * state.quantity / 100).toFixed(2)})
+    }
+
+    let decreaseQuantity = () => {
         let newQuantity = state.quantity - 1;
         if(isIncDisabled) {
             setIncDisabled(!isIncDisabled);
@@ -26,7 +33,7 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
         setQuantity({quantity: newQuantity, totalPrice: (price * newQuantity / 100).toFixed(2)});
     }
 
-    let increasePrice = () => {
+    let increaseQuantity = () => {
         let newQuantity = state.quantity + 1;
         if(isDecDisabled) {
             setDecDisabled(!isDecDisabled);
@@ -46,7 +53,7 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
                     <Heading size="md" >Thai Oat</Heading>
                     <Text>A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
                     <Stat>
-                        <StatNumber>${(price / 100).toFixed(2)}</StatNumber> 
+                        <StatNumber>${(parseInt(priceString) / 100).toFixed(2)}</StatNumber> 
                     </Stat>
                 </Box>
             </Flex>
@@ -69,12 +76,22 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
                         <Image src="/images/red_boba.png" alt={"boba picture"} object-fit={"cover"} width={width} height="300"/>
                     </Box>
                     <Text textAlign="left">A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
+                    <FormControl id="size">
+                        <FormLabel as="legend">Select Size</FormLabel>
+                        <RadioGroup onChange={(value: string) => {changePrice(value)}} value={price.toString()} defaultValue={price.toString()}>
+                            <Stack>
+                                <Radio value="1350">small 32oz</Radio>
+                                <Radio value="2600">medium 64oz</Radio>
+                                <Radio value="4500">large 128oz</Radio>
+                            </Stack>
+                        </RadioGroup>
+                    </FormControl>
                 </ModalBody>
                 <ModalFooter>
                     <Flex direction="row" justifyContent="flex-end" align="center">
-                        <Button isDisabled={isDecDisabled} onClick={decreasePrice} mr={2}>-</Button>
+                        <Button isDisabled={isDecDisabled} onClick={decreaseQuantity} mr={2}>-</Button>
                         <Input type={"number"} value={state.quantity} textAlign="center" maxW="52px" isReadOnly={true}/>
-                        <Button isDisabled={isIncDisabled} onClick={increasePrice}  ml={2}>+</Button>
+                        <Button isDisabled={isIncDisabled} onClick={increaseQuantity}  ml={2}>+</Button>
                         <Button ml={8} colorScheme="red" mr={2} onClick={onClose}>
                             <Text fontWeight={"bold"} >Add to Cart - </Text>
                             <Text fontWeight={"bold"} >${state.totalPrice}</Text>
