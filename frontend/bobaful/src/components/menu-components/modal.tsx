@@ -1,4 +1,4 @@
-import { Flex, Box, Heading, Stat, StatNumber, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalHeader, ModalBody, ModalFooter, Button, Text, useDisclosure } from '@chakra-ui/react';
+import { Flex, Box, Heading, Stat, StatNumber, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalHeader, ModalBody, ModalFooter, Button, Text, useDisclosure, useNumberInput, Input } from '@chakra-ui/react';
 import Image from 'next/image'
 import React from 'react'
 
@@ -9,6 +9,21 @@ interface modalProps {
 export const MenuItemModal: React.FC<modalProps> = ({price}) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
     let width =  (360 / 539 * 300).toString();
+    const {
+        getInputProps,
+        getIncrementButtonProps,
+        getDecrementButtonProps,
+    } = useNumberInput({
+        step: 1,
+        defaultValue: 1,
+        min: 1,
+        max: 6,
+    })
+
+    const inc = getIncrementButtonProps();
+    const dec = getDecrementButtonProps();
+    const input = getInputProps();
+
     return (
         <>
         <Flex as="button" width={"100%"} onClick={onOpen} justify="space-between" align="center" p={4}>
@@ -42,10 +57,15 @@ export const MenuItemModal: React.FC<modalProps> = ({price}) => {
                     <Text textAlign="left">A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="red" mr={3} onClick={onClose}>
-                        <Text fontWeight={"bold"} >Add to Cart - </Text>
-                        <Text fontWeight={"bold"} >${price}</Text>
-                    </Button>
+                    <Flex direction="row" justifyContent="flex-end" align="center">
+                        <Button {...dec}mr={2}>-</Button>
+                        <Input textAlign="center" maxW="52px" {...input} />
+                        <Button {...inc} ml={2}>+</Button>
+                        <Button ml={8} colorScheme="red" mr={2} onClick={onClose}>
+                            <Text fontWeight={"bold"} >Add to Cart - </Text>
+                            <Text fontWeight={"bold"} >${price}</Text>
+                        </Button>
+                    </Flex>
                 </ModalFooter>
             </ModalContent>
         </Modal>
