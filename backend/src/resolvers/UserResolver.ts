@@ -71,7 +71,9 @@ export const UserResolver = {
       const existingUser = await User.findOne({ email: args.email });
       if (existingUser) {
         //if the email is already taken
-        return null;
+        return {
+          errors: [{ field: "email", message: "email already taken" }],
+        };
       }
       const hashedPassword = await argon2.hash(args.password);
       console.log(args);
@@ -86,23 +88,37 @@ export const UserResolver = {
       await user.save();
       // After creating the user, save a cookie to keep the user logged in
       req.session.userId = user.id;
-      return user;
+      return { user };
     },
 
     login: async (_, { email, password }, { req }) => {
       const user = await User.findOne({ email: email });
       if (!user) {
-        // No such username or email exists, return error
-        return null;
+        // No such email exists, return error
+        return {
+          errors: [
+            {
+              field: "email",
+              message: "email doesn't exist",
+            },
+          ],
+        };
       }
       const validPassword = await argon2.verify(user.password, password);
       if (!validPassword) {
         // Incorrect password, return error
-        return null;
+        return {
+          errors: [
+            {
+              field: "password",
+              message: "incorrect password",
+            },
+          ],
+        };
       }
       // Keep the user logged in using a cookie
       req.session.userId = user.id;
-      return user;
+      return { user };
     },
 
     logout: (_, __, { req, res }) => {
