@@ -16,7 +16,7 @@ const signin: React.FC<signinProps> = ({}) => {
       <Navbar />
       <Box mt={8} mx="auto" maxW="700px" w="100%">
         <Formik
-          initialValues={{ email: "", name: "", password: "" }}
+          initialValues={{ email: "", password: "" }}
           onSubmit={(values) => {
             // check for errors
             // otherwise user is authenticated, go to home page
@@ -30,7 +30,6 @@ const signin: React.FC<signinProps> = ({}) => {
                 <Heading text="Sign In" />
               </Center>
               <Form>
-                <InputField name="name" placeholder="name" label="Name" />
                 <Box mt={5}>
                   <InputField name="email" placeholder="email" label="Email" />
                 </Box>
