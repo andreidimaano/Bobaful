@@ -1,4 +1,4 @@
-import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Stat, StatNumber, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, FormControl, FormLabel, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Stat, StatNumber, Text, useDisclosure } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
@@ -76,13 +76,23 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
                         <Image src="/images/red_boba.png" alt={"boba picture"} object-fit={"cover"} width={width} height="300"/>
                     </Box>
                     <Text textAlign="left">A healthier version of the original thai tea paired with our house oat milk. A definite fan favorite</Text>
-                    <FormControl id="size">
+                    <FormControl id="size" my={4}>
                         <FormLabel as="legend">Select Size</FormLabel>
                         <RadioGroup onChange={(value: string) => {changePrice(value)}} value={price.toString()} defaultValue={price.toString()}>
                             <Stack>
-                                <Radio value="1350">small 32oz</Radio>
-                                <Radio value="2600">medium 64oz</Radio>
-                                <Radio value="4500">large 128oz</Radio>
+                                <Flex justifyContent="space-between" >
+                                    <Radio value="1350">Small (32oz)</Radio>
+                                </Flex>
+                                <Divider/>
+                                <Flex justifyContent="space-between" >
+                                    <Radio value="2600">Medium 64oz</Radio>
+                                    <Text>$26.00</Text>
+                                </Flex>
+                                <Divider/>
+                                <Flex justifyContent="space-between" >
+                                    <Radio value="4500">Large 128oz</Radio>
+                                    <Text>$45.00</Text>
+                                </Flex>
                             </Stack>
                         </RadioGroup>
                     </FormControl>
