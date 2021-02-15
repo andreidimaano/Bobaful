@@ -16,9 +16,9 @@ const Menu: React.FC<menuProps> = ({}) => {
         <Box>
             <MenuItemModal priceString={"1350"}/>
             <Divider />
-            <MenuItemModal priceString={"1200"}/>
+            <MenuItemModal priceString={"1350"}/>
             <Divider />
-            <MenuItemModal priceString={"1400"}/>
+            <MenuItemModal priceString={"1350"}/>
             <Divider />
         </Box>
         </>

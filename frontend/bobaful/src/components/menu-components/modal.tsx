@@ -103,7 +103,7 @@ export const MenuItemModal: React.FC<modalProps> = ({priceString}) => {
                         <Input type={"number"} value={state.quantity} textAlign="center" maxW="52px" isReadOnly={true}/>
                         <Button isDisabled={isIncDisabled} onClick={increaseQuantity}  ml={2}>+</Button>
                         <Button ml={8} colorScheme="red" mr={2} onClick={onClose}>
-                            <Text fontWeight={"bold"} >Add to Cart - </Text>
+                            <Text fontWeight={"bold"} mr={1}>Add to Cart - </Text>
                             <Text fontWeight={"bold"} >${state.totalPrice}</Text>
                         </Button>
                     </Flex>
