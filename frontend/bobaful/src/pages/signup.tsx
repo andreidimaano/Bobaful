@@ -5,7 +5,7 @@ import { Box, Button, Center, Link } from "@chakra-ui/react";
 import { InputField } from "../components/authentication-components/InputField";
 import { Navbar } from "../components/Navbar";
 import NextLink from "next/link";
-import Heading from "../components/authentication-components/Heading";
+import { Heading } from "../components/authentication-components/Heading";
 
 interface signupProps {}
 
