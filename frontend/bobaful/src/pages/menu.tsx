@@ -14,11 +14,11 @@ const Menu: React.FC<menuProps> = ({}) => {
         <>
         <Navbar />
         <Box>
-            <MenuItemModal price={"10.23"}/>
+            <MenuItemModal priceString={"1350"}/>
             <Divider />
-            <MenuItemModal price={"12.00"}/>
+            <MenuItemModal priceString={"1350"}/>
             <Divider />
-            <MenuItemModal price={"14.00"}/>
+            <MenuItemModal priceString={"1350"}/>
             <Divider />
         </Box>
         </>
