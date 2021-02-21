@@ -21,7 +21,6 @@ const signup: React.FC<signupProps> = ({}) => {
         <Formik
           initialValues={{ email: "", name: "", password: "", phone: "" }}
           onSubmit={async (values, { setErrors }) => {
-            console.log(values);
             const response = await createUser({
               email: values.email,
               name: values.name,
