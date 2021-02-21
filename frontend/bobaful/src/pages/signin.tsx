@@ -28,6 +28,7 @@ const signin: React.FC<signinProps> = ({}) => {
             } else if (response.data?.login.user) {
               // otherwise user is authenticated, go to home page
               router.push("/");
+              router.reload();
             }
           }}
         >

@@ -33,6 +33,7 @@ const signup: React.FC<signupProps> = ({}) => {
             } else if (response.data?.createUser.user) {
               // otherwise user is authenticated, go to home page
               router.push("/");
+              router.reload();
             }
           }}
         >
