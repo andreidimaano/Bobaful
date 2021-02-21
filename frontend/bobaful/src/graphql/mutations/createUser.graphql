@@ -1,0 +1,21 @@
+mutation createUser(
+  $name: String!
+  $email: String!
+  $password: String!
+  $phone: String!
+) {
+  createUser(
+    args: { name: $name, email: $email, password: $password, phone: $phone }
+  ) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+      name
+      phone
+      email
+    }
+  }
+}
