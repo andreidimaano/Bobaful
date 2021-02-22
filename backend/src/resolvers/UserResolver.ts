@@ -13,6 +13,7 @@ export interface userArguments extends mongoose.Document {
   phone: string;
   password: string;
   orders: mongoose.Schema.Types.ObjectId[];
+  cart: mongoose.Schema.Types.ObjectId[];
 }
 
 export const UserResolver = {
@@ -149,6 +150,78 @@ export const UserResolver = {
           resolve(true);
         })
       );
+    },
+
+    updateCart: async (_, { args }) => {
+      //find the target user to update
+      let foundUser;
+      if (args.userId) {
+        try {
+          foundUser = await User.findById(args.userId);
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else {
+        console.log("No user ID supplied to updateCart!");
+        return false;
+      }
+
+      if (args.itemId) {
+        //default quantity of 1
+        let quantity = 1;
+        if (args.quantity) {
+          quantity = args.quantity;
+        }
+        //update quantity of an item based on its ID
+        //to delete, use negative quantity (e.g. -999)
+        let cartItems = foundUser.cart;
+        let updatedFlag = false;
+        // iterate through the item ids in the cart array
+        for (let i = 0; i < cartItems.length; i++) {
+          //if there is a match, attempt to update the item's quantity
+          if (args.itemId == cartItems[i]) {
+            let foundItem;
+            try {
+              foundItem = await Item.findById(args.itemId);
+            } catch (err) {
+              throw new Error(err);
+            }
+            foundItem.quantity += args.quantity;
+            // if quantity goes below or equal to 0, remove that item
+            if (foundItem.quantity <= 0) {
+              cartItems.splice(i, 1);
+            }
+            try {
+              await foundItem.save();
+            } catch (err) {
+              throw new Error(err);
+            }
+
+            updatedFlag = true;
+            break;
+          }
+        }
+        //if the itemId was not found in the cart array
+        if (!updatedFlag) {
+          //if the supplied itemId is a valid and existing item, add that id to the cart array
+          let foundItem;
+          try {
+            foundItem = await Item.findById(args.itemId);
+          } catch (err) {
+            throw new Error(err);
+          }
+          if (foundItem) {
+            cartItems.push(args.itemId);
+            foundUser.items = cartItems;
+          }
+        }
+      } else {
+        console.log("You must supply an item ID + optional quantity.");
+        return false;
+      }
+
+      await foundUser.save();
+      return true;
     },
 
     deleteUser: async (_, { args }) => {

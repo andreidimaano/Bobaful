@@ -57,6 +57,13 @@ export const schema = gql`
     phone: String!
     password: String!
     orders: [ID!]
+    cart: [ID!]
+  }
+
+  input updateCartArguments {
+    userId: ID!
+    itemId: ID!
+    quantity: Int
   }
 
   input DeleteUserArguments {
@@ -127,6 +134,7 @@ export const schema = gql`
     createUser(args: UserArguments): UserResponse!
     login(email: String!, password: String!): UserResponse!
     logout: Boolean!
+    updateCart(args: updateCartArguments): Boolean!
     deleteAllUsers: Boolean!
     deleteUser(args: DeleteUserArguments): Boolean!
   }
