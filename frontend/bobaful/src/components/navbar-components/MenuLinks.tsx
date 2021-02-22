@@ -12,7 +12,9 @@ interface MenuLinksProps {}
 
 export const MenuLinks: React.FC<MenuLinksProps> = () => {
   const router = useRouter();
-  const [{ data, fetching }] = useMeQuery();
+  const [{ data, fetching }] = useMeQuery({
+    pause: typeof window === "undefined",
+  });
   const [, logout] = useLogoutMutation();
   let body = null;
   // data is loading

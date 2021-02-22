@@ -8,6 +8,8 @@ import NextLink from "next/link";
 import { Heading } from "../components/authentication-components/Heading";
 import { useCreateUserMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 interface signupProps {}
 
@@ -33,7 +35,6 @@ const signup: React.FC<signupProps> = ({}) => {
             } else if (response.data?.createUser.user) {
               // otherwise user is authenticated, go to home page
               router.push("/");
-              router.reload();
             }
           }}
         >
@@ -74,4 +75,4 @@ const signup: React.FC<signupProps> = ({}) => {
   );
 };
 
-export default signup;
+export default withUrqlClient(createUrqlClient)(signup);

@@ -8,6 +8,8 @@ import NextLink from "next/link";
 import { Heading } from "../components/authentication-components/Heading";
 import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 interface signinProps {}
 
@@ -28,7 +30,6 @@ const signin: React.FC<signinProps> = ({}) => {
             } else if (response.data?.login.user) {
               // otherwise user is authenticated, go to home page
               router.push("/");
-              router.reload();
             }
           }}
         >
@@ -68,4 +69,4 @@ const signin: React.FC<signinProps> = ({}) => {
   );
 };
 
-export default signin;
+export default withUrqlClient(createUrqlClient)(signin);
