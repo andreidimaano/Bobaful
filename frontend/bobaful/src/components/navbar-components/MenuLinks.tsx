@@ -5,10 +5,56 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { AiFillHome } from "react-icons/ai";
 import { FaReceipt } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
+import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
+import { useRouter } from "next/router";
 
 interface MenuLinksProps {}
 
 export const MenuLinks: React.FC<MenuLinksProps> = () => {
+  const router = useRouter();
+  const [{ data, fetching }] = useMeQuery({
+    pause: typeof window === "undefined",
+  });
+  const [, logout] = useLogoutMutation();
+  let body = null;
+  // data is loading
+  if (fetching) {
+    // user is not logged in
+  } else if (!data?.me) {
+    body = (
+      <>
+        <Divider />
+        <NextLink href="/signup">
+          <Link>
+            <Flex direction="row" align="center">
+              <Icon as={BsFillPersonFill} boxSize={8} mr={4} />
+              <Text fontWeight={"bold"}>Sign Up or Sign In</Text>
+            </Flex>
+          </Link>
+        </NextLink>
+      </>
+    );
+    // user is logged in
+  } else {
+    body = (
+      <>
+        <Divider />
+        <NextLink href="/">
+          <Link
+            onClick={async () => {
+              await logout();
+              router.reload();
+            }}
+          >
+            <Flex direction="row" align="center">
+              <Icon as={IoLogOut} boxSize={8} mr={4} />
+              <Text fontWeight={"bold"}>Log Out</Text>
+            </Flex>
+          </Link>
+        </NextLink>
+      </>
+    );
+  }
   return (
     <Box
       pos="fixed"
@@ -51,24 +97,7 @@ export const MenuLinks: React.FC<MenuLinksProps> = () => {
             </Flex>
           </Link>
         </NextLink>
-        <Divider />
-        <NextLink href="/signup">
-          <Link>
-            <Flex direction="row" align="center">
-              <Icon as={BsFillPersonFill} boxSize={8} mr={4} />
-              <Text fontWeight={"bold"}>Sign Up or Sign In</Text>
-            </Flex>
-          </Link>
-        </NextLink>
-        <Divider />
-        <NextLink href="/">
-          <Link>
-            <Flex direction="row" align="center">
-              <Icon as={IoLogOut} boxSize={8} mr={4} />
-              <Text fontWeight={"bold"}>Log Out</Text>
-            </Flex>
-          </Link>
-        </NextLink>
+        {body}
       </Stack>
     </Box>
   );

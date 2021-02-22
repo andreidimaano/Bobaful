@@ -1,8 +1,8 @@
-import React from 'react'
-import { Navbar } from '../components/Navbar'
+import React from "react";
+import { Navbar } from "../components/Navbar";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
-const Index = () => (
-  <Navbar/>
-)
+const Index = () => <Navbar />;
 
-export default Index
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index);

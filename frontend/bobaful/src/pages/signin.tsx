@@ -6,10 +6,15 @@ import { InputField } from "../components/authentication-components/InputField";
 import { Navbar } from "../components/Navbar";
 import NextLink from "next/link";
 import { Heading } from "../components/authentication-components/Heading";
+import { useLoginMutation } from "../generated/graphql";
+import { toErrorMap } from "../utils/toErrorMap";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 interface signinProps {}
 
 const signin: React.FC<signinProps> = ({}) => {
+  const [, login] = useLoginMutation();
   const router = useRouter();
   return (
     <>
@@ -17,11 +22,15 @@ const signin: React.FC<signinProps> = ({}) => {
       <Box mt={8} mx="auto" maxW="700px" w="100%">
         <Formik
           initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => {
+          onSubmit={async (values, { setErrors }) => {
+            const response = await login(values);
             // check for errors
-            // otherwise user is authenticated, go to home page
-            console.log(values);
-            router.push("/");
+            if (response.data?.login.errors) {
+              setErrors(toErrorMap(response.data.login.errors));
+            } else if (response.data?.login.user) {
+              // otherwise user is authenticated, go to home page
+              router.push("/");
+            }
           }}
         >
           {({ isSubmitting }) => (
@@ -60,4 +69,4 @@ const signin: React.FC<signinProps> = ({}) => {
   );
 };
 
-export default signin;
+export default withUrqlClient(createUrqlClient)(signin);

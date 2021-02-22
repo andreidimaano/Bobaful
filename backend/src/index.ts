@@ -9,11 +9,20 @@ import { schema } from "./typedefs";
 import { mongoUrl, cookieName, secret } from "./constants";
 import session from "express-session";
 import connectMongo from "connect-mongo";
+import cors from "cors";
 
 const MongoStore = connectMongo(session);
 
 const startServer = async () => {
   const app = express();
+  // Cors
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+  // Express session cookies
   app.use(
     session({
       name: cookieName,
@@ -38,7 +47,10 @@ const startServer = async () => {
     context: ({ req, res }) => ({ req, res }),
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   try {
     await mongoose.connect(mongoUrl, {

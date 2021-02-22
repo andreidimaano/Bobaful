@@ -6,22 +6,36 @@ import { InputField } from "../components/authentication-components/InputField";
 import { Navbar } from "../components/Navbar";
 import NextLink from "next/link";
 import { Heading } from "../components/authentication-components/Heading";
+import { useCreateUserMutation } from "../generated/graphql";
+import { toErrorMap } from "../utils/toErrorMap";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 interface signupProps {}
 
 const signup: React.FC<signupProps> = ({}) => {
+  const [, createUser] = useCreateUserMutation();
   const router = useRouter();
   return (
     <>
       <Navbar />
       <Box mt={8} mx="auto" maxW="700px" w="100%">
         <Formik
-          initialValues={{ email: "", name: "", password: "" }}
-          onSubmit={(values) => {
+          initialValues={{ email: "", name: "", password: "", phone: "" }}
+          onSubmit={async (values, { setErrors }) => {
+            const response = await createUser({
+              email: values.email,
+              name: values.name,
+              password: values.password,
+              phone: "",
+            });
             // check for errors
-            // otherwise user is authenticated, go to home page
-            console.log(values);
-            router.push("/");
+            if (response.data?.createUser.errors) {
+              setErrors(toErrorMap(response.data.createUser.errors));
+            } else if (response.data?.createUser.user) {
+              // otherwise user is authenticated, go to home page
+              router.push("/");
+            }
           }}
         >
           {({ isSubmitting }) => (
@@ -61,4 +75,4 @@ const signup: React.FC<signupProps> = ({}) => {
   );
 };
 
-export default signup;
+export default withUrqlClient(createUrqlClient)(signup);
