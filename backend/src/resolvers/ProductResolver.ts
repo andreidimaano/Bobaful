@@ -1,6 +1,7 @@
 import { Product } from "../models/Product";
 import { Order } from "../models/Order";
 import { Item } from "../models/Item";
+import { User } from "../models/User";
 import mongoose from "mongoose";
 
 export interface productArguments extends mongoose.Document {
@@ -74,15 +75,30 @@ export const ProductResolver = {
       }
       let foundItems;
       let foundOrders;
+      let foundUsers;
       try {
         foundItems = await Item.find({});
         foundOrders = await Order.find({});
+        foundUsers = await User.find({});
       } catch (err) {
         throw new Error(err);
       }
-      //Iterate through items and delete (any items containing the product) from orders
+      //Iterate through items and delete (any items containing the product) from orders and user carts
       for (let i = 0; i < foundItems.length; i++) {
         if (foundItems[i].product == args.productId) {
+          //user carts
+          for (let j = 0; j < foundUsers.length; j++) {
+            if (foundUsers[j].cart.includes(foundItems[i]._id)) {
+              try {
+                await User.updateOne(
+                  { _id: foundUsers[j]._id },
+                  { $pullAll: { cart: [foundItems[i]._id] } }
+                );
+              } catch (err) {
+                throw new Error(err);
+              }
+            }
+          }
           for (let j = 0; j < foundOrders.length; j++) {
             if (foundOrders[j].items.includes(foundItems[i]._id)) {
               let updatedOrder;

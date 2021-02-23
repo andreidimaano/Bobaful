@@ -6,6 +6,7 @@ import { Order } from "../models/Order";
 import { Item } from "../models/Item";
 import { Product } from "../models/Product";
 import { cookieName } from "../constants";
+import { ObjectID } from "typeorm";
 
 export interface userArguments extends mongoose.Document {
   name: string;
@@ -167,42 +168,24 @@ export const UserResolver = {
       }
 
       if (args.itemId) {
-        //default quantity of 1
-        let quantity = 1;
-        if (args.quantity) {
-          quantity = args.quantity;
+        let cartItemIds: ObjectID[];
+        try {
+          cartItemIds = foundUser.cart;
+        } catch (err) {
+          // if foundUser.cart does not exist, use an empty array
+          cartItemIds = [];
         }
-        //update quantity of an item based on its ID
-        //to delete, use negative quantity (e.g. -999)
-        let cartItems = foundUser.cart;
-        let updatedFlag = false;
-        // iterate through the item ids in the cart array
-        for (let i = 0; i < cartItems.length; i++) {
-          //if there is a match, attempt to update the item's quantity
-          if (args.itemId == cartItems[i]) {
-            let foundItem;
-            try {
-              foundItem = await Item.findById(args.itemId);
-            } catch (err) {
-              throw new Error(err);
-            }
-            foundItem.quantity += args.quantity;
-            // if quantity goes below or equal to 0, remove that item
-            if (foundItem.quantity <= 0) {
-              cartItems.splice(i, 1);
-            }
-            try {
-              await foundItem.save();
-            } catch (err) {
-              throw new Error(err);
-            }
 
-            updatedFlag = true;
+        let foundFlag = false;
+        // iterate through the item ids in the cart array and see if the item is already there
+        for (let i = 0; i < cartItemIds.length; i++) {
+          if (args.itemId == cartItemIds[i]) {
+            foundFlag = true;
             break;
           }
         }
         //if the itemId was not found in the cart array
-        if (!updatedFlag) {
+        if (!foundFlag) {
           //if the supplied itemId is a valid and existing item, add that id to the cart array
           let foundItem;
           try {
@@ -211,12 +194,17 @@ export const UserResolver = {
             throw new Error(err);
           }
           if (foundItem) {
-            cartItems.push(args.itemId);
-            foundUser.items = cartItems;
+            cartItemIds.push(args.itemId);
+            foundUser.items = cartItemIds;
           }
+        } else {
+          console.log(
+            "updateCart: Attempted to add an item to the cart that already exists in the cart."
+          );
+          return false;
         }
       } else {
-        console.log("You must supply an item ID + optional quantity.");
+        console.log("You must supply an item ID.");
         return false;
       }
 

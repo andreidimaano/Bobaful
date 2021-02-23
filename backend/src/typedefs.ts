@@ -63,7 +63,6 @@ export const schema = gql`
   input updateCartArguments {
     userId: ID!
     itemId: ID!
-    quantity: Int
   }
 
   input DeleteUserArguments {
