@@ -116,6 +116,7 @@ export const schema = gql`
     orders: [Order!]!
     users: [User!]!
     me: User
+    getCurrCart: [Item!]
   }
 
   type Mutation {

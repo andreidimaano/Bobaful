@@ -7,6 +7,7 @@ import { Item } from "../models/Item";
 import { Product } from "../models/Product";
 import { cookieName } from "../constants";
 import { ObjectID } from "typeorm";
+import { itemArguments } from "./ItemResolver";
 
 export interface userArguments extends mongoose.Document {
   name: string;
@@ -34,10 +35,12 @@ export const UserResolver = {
       } catch (err) {
         throw new Error(err);
       }
-      // Loop through each user to fill their orders variable
+      // Loop through each user
       for (let i = 0; i < foundUsers.length; i++) {
         let currentUser = foundUsers[i];
         const orders: orderArguments[] = [];
+
+        //fill their orders variable
         for (let j = 0; j < currentUser.orders.length; j++) {
           const foundOrder = await Order.findById(currentUser.orders[j]);
           if (foundOrder) {
@@ -55,17 +58,44 @@ export const UserResolver = {
             orders.push(foundOrder);
           }
         }
+        const currCart: itemArguments[] = [];
+        //fill their cart variable
+        for (let j = 0; j < currentUser.cart.length; j++) {
+          const foundItem = await Item.findById(currentUser.cart[j]);
+          if (foundItem) {
+            const foundProduct = await Product.findById(foundItem.product);
+            if (foundProduct) {
+              foundItem.product = foundProduct;
+            }
+            currCart.push(foundItem);
+          }
+        }
         let constructedUser = {
           id: currentUser._id,
           email: currentUser.email,
           name: currentUser.name,
           password: currentUser.password,
           orders: orders,
+          cart: currCart,
         };
         // Push the user to the userArray
         userArray.push(constructedUser);
       }
       return userArray;
+    },
+    getCurrCart: async (_, __, { req }) => {
+      // If user is not logged in
+      if (!req.session.userId) {
+        return null;
+      }
+      // get current user's id
+      let currUser;
+      try {
+        currUser = await User.findById(req.session.userId);
+      } catch (err) {
+        throw new Error(err);
+      }
+      return currUser.cart;
     },
   },
   Mutation: {
