@@ -98,6 +98,7 @@ export const schema = gql`
     email: String!
     phone: String
     orders: [Order!]!
+    cart: [Item!]
   }
 
   type AuthenticationError {

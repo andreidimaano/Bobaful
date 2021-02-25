@@ -95,7 +95,19 @@ export const UserResolver = {
       } catch (err) {
         throw new Error(err);
       }
-      return currUser.cart;
+      const currCart: itemArguments[] = [];
+      //fill their cart variable
+      for (let j = 0; j < currUser.cart.length; j++) {
+        const foundItem = await Item.findById(currUser.cart[j]);
+        if (foundItem) {
+          const foundProduct = await Product.findById(foundItem.product);
+          if (foundProduct) {
+            foundItem.product = foundProduct;
+          }
+          currCart.push(foundItem);
+        }
+      }
+      return currCart;
     },
   },
   Mutation: {
