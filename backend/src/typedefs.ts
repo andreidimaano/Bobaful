@@ -57,6 +57,12 @@ export const schema = gql`
     phone: String!
     password: String!
     orders: [ID!]
+    cart: [ID!]
+  }
+
+  input updateCartArguments {
+    userId: ID!
+    itemId: ID!
   }
 
   input DeleteUserArguments {
@@ -92,6 +98,7 @@ export const schema = gql`
     email: String!
     phone: String
     orders: [Order!]!
+    cart: [Item!]
   }
 
   type AuthenticationError {
@@ -110,6 +117,7 @@ export const schema = gql`
     orders: [Order!]!
     users: [User!]!
     me: User
+    getCurrCart: [Item!]
   }
 
   type Mutation {
@@ -127,6 +135,7 @@ export const schema = gql`
     createUser(args: UserArguments): UserResponse!
     login(email: String!, password: String!): UserResponse!
     logout: Boolean!
+    updateCart(args: updateCartArguments): Boolean!
     deleteAllUsers: Boolean!
     deleteUser(args: DeleteUserArguments): Boolean!
   }

@@ -6,6 +6,8 @@ import { Order } from "../models/Order";
 import { Item } from "../models/Item";
 import { Product } from "../models/Product";
 import { cookieName } from "../constants";
+import { ObjectID } from "typeorm";
+import { itemArguments } from "./ItemResolver";
 
 export interface userArguments extends mongoose.Document {
   name: string;
@@ -13,6 +15,7 @@ export interface userArguments extends mongoose.Document {
   phone: string;
   password: string;
   orders: mongoose.Schema.Types.ObjectId[];
+  cart: mongoose.Schema.Types.ObjectId[];
 }
 
 export const UserResolver = {
@@ -32,10 +35,12 @@ export const UserResolver = {
       } catch (err) {
         throw new Error(err);
       }
-      // Loop through each user to fill their orders variable
+      // Loop through each user
       for (let i = 0; i < foundUsers.length; i++) {
         let currentUser = foundUsers[i];
         const orders: orderArguments[] = [];
+
+        //fill their orders variable
         for (let j = 0; j < currentUser.orders.length; j++) {
           const foundOrder = await Order.findById(currentUser.orders[j]);
           if (foundOrder) {
@@ -53,17 +58,56 @@ export const UserResolver = {
             orders.push(foundOrder);
           }
         }
+        const currCart: itemArguments[] = [];
+        //fill their cart variable
+        for (let j = 0; j < currentUser.cart.length; j++) {
+          const foundItem = await Item.findById(currentUser.cart[j]);
+          if (foundItem) {
+            const foundProduct = await Product.findById(foundItem.product);
+            if (foundProduct) {
+              foundItem.product = foundProduct;
+            }
+            currCart.push(foundItem);
+          }
+        }
         let constructedUser = {
           id: currentUser._id,
           email: currentUser.email,
           name: currentUser.name,
           password: currentUser.password,
           orders: orders,
+          cart: currCart,
         };
         // Push the user to the userArray
         userArray.push(constructedUser);
       }
       return userArray;
+    },
+    getCurrCart: async (_, __, { req }) => {
+      // If user is not logged in
+      if (!req.session.userId) {
+        return null;
+      }
+      // get current user's id
+      let currUser;
+      try {
+        currUser = await User.findById(req.session.userId);
+      } catch (err) {
+        throw new Error(err);
+      }
+      const currCart: itemArguments[] = [];
+      //fill their cart variable
+      for (let j = 0; j < currUser.cart.length; j++) {
+        const foundItem = await Item.findById(currUser.cart[j]);
+        if (foundItem) {
+          const foundProduct = await Product.findById(foundItem.product);
+          if (foundProduct) {
+            foundItem.product = foundProduct;
+          }
+          currCart.push(foundItem);
+        }
+      }
+      return currCart;
     },
   },
   Mutation: {
@@ -149,6 +193,65 @@ export const UserResolver = {
           resolve(true);
         })
       );
+    },
+
+    updateCart: async (_, { args }) => {
+      //find the target user to update
+      let foundUser;
+      if (args.userId) {
+        try {
+          foundUser = await User.findById(args.userId);
+        } catch (err) {
+          throw new Error(err);
+        }
+      } else {
+        console.log("No user ID supplied to updateCart!");
+        return false;
+      }
+
+      if (args.itemId) {
+        let cartItemIds: ObjectID[];
+        try {
+          cartItemIds = foundUser.cart;
+        } catch (err) {
+          // if foundUser.cart does not exist, use an empty array
+          cartItemIds = [];
+        }
+
+        let foundFlag = false;
+        // iterate through the item ids in the cart array and see if the item is already there
+        for (let i = 0; i < cartItemIds.length; i++) {
+          if (args.itemId == cartItemIds[i]) {
+            foundFlag = true;
+            break;
+          }
+        }
+        //if the itemId was not found in the cart array
+        if (!foundFlag) {
+          //if the supplied itemId is a valid and existing item, add that id to the cart array
+          let foundItem;
+          try {
+            foundItem = await Item.findById(args.itemId);
+          } catch (err) {
+            throw new Error(err);
+          }
+          if (foundItem) {
+            cartItemIds.push(args.itemId);
+            foundUser.items = cartItemIds;
+          }
+        } else {
+          console.log(
+            "updateCart: Attempted to add an item to the cart that already exists in the cart."
+          );
+          return false;
+        }
+      } else {
+        console.log("You must supply an item ID.");
+        return false;
+      }
+
+      await foundUser.save();
+      return true;
     },
 
     deleteUser: async (_, { args }) => {

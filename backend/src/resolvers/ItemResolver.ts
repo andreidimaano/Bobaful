@@ -1,6 +1,7 @@
 import { Item } from "../models/Item";
 import { Product } from "../models/Product";
 import { Order } from "../models/Order";
+import { User } from "../models/User";
 import mongoose from "mongoose";
 import { productArguments } from "../resolvers/ProductResolver";
 
@@ -58,11 +59,29 @@ export const ItemResolver = {
     deleteItem: async (_, { args }) => {
       let foundItem;
       let foundOrders;
+      let foundUsers;
       try {
         foundItem = await Item.findById(args.itemId);
         foundOrders = await Order.find({});
+        foundUsers = await User.find({});
       } catch (err) {
         throw new Error(err);
+      }
+
+      // for each user:
+      for (let i = 0; i < foundUsers.length; i++) {
+        // if item id in user.cart, remove it
+        if (foundUsers[i].cart.includes(foundItem._id)) {
+          //remove the id from the user.cart
+          try {
+            await User.updateOne(
+              { _id: foundUsers[i]._id },
+              { $pullAll: { cart: [foundItem._id] } }
+            );
+          } catch (err) {
+            throw new Error(err);
+          }
+        }
       }
 
       // for each order:
@@ -93,14 +112,31 @@ export const ItemResolver = {
     deleteAllItems: async (): Promise<Boolean> => {
       let foundItems;
       let foundOrders;
+      let foundUsers;
       try {
         foundItems = await Item.find({});
         foundOrders = await Order.find({});
+        foundUsers = await User.find({});
       } catch (err) {
         throw new Error(err);
       }
       // for each item:
       for (let i = 0; i < foundItems.length; i++) {
+        // for each user:
+        for (let j = 0; j < foundUsers.length; j++) {
+          // if item id in user.cart, remove it
+          if (foundUsers[j].items.includes(foundItems[i]._id)) {
+            //remove the id from the user.cart
+            try {
+              await User.updateOne(
+                { _id: foundUsers[j]._id },
+                { $pullAll: { cart: [foundItems[i]._id] } }
+              );
+            } catch (err) {
+              throw new Error(err);
+            }
+          }
+        }
         // for each order:
         for (let j = 0; j < foundOrders.length; j++) {
           // if item id in order.items, remove it

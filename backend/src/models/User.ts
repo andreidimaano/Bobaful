@@ -14,6 +14,13 @@ export const UserSchema = new Schema({
       required: false,
     },
   ],
+  cart: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
+      required: false,
+    },
+  ],
 });
 
 export const User = mongoose.model<userArguments>("User", UserSchema);
